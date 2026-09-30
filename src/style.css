@@ -1,0 +1,35 @@
+:root {
+  color: #19231f;
+  background: #f3f6f1;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --muted: #657069;
+  --paper: #fffdf7;
+  --line: #d8e0d8;
+  --accent: #d9683a;
+  --green: #315c4d;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+a { color: inherit; }
+button { font: inherit; cursor: pointer; }
+
+#app { min-height: 100vh; }
+.page { min-height: 100vh; padding: 28px clamp(20px, 6vw, 88px); }
+.masthead { display: flex; justify-content: space-between; align-items: center; max-width: 1180px; margin: 0 auto; }
+.brand { color: var(--green); font: 700 1.15rem/1.1 Georgia, serif; letter-spacing: .04em; text-decoration: none; }
+.eyebrow { color: var(--accent); font: 700 .76rem/1.2 Arial, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
+.content { max-width: 1180px; margin: 13vh auto 0; }
+.content h1 { max-width: 780px; margin: 14px 0 22px; font-size: clamp(3.2rem, 8vw, 7.4rem); line-height: .91; letter-spacing: -.055em; font-weight: 500; }
+.content p { max-width: 520px; color: var(--muted); font: 1.08rem/1.55 Arial, sans-serif; }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 36px; }
+.button { display: inline-block; padding: 13px 18px; border: 1px solid var(--green); color: var(--paper); background: var(--green); text-decoration: none; font: 700 .86rem/1 Arial, sans-serif; }
+.button.secondary { color: var(--green); background: transparent; }
+.panel { max-width: 760px; margin: 12vh auto 0; padding: clamp(26px, 5vw, 56px); border: 1px solid var(--line); background: var(--paper); }
+.panel h1 { margin-top: 0; font-size: clamp(2.3rem, 5vw, 4.5rem); }
+.status { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font: 700 .78rem/1 Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+.status::before { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); content: ''; }
+@media (max-width: 640px) { .page { padding: 22px 20px; } .content { margin-top: 18vh; } .content h1 { font-size: 3.55rem; } }
