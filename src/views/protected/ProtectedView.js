@@ -9,19 +9,21 @@ import {
   table,
 } from '../../components/ui.js'
 
-export function renderProtectedView() {
+export function renderProtectedView(user) {
+  const isAdmin = user.rol === 'admin'
+  const roleLabel = isAdmin ? 'Administración' : 'Operaciones de guardia'
   return `
     <main class="page">
       <header class="masthead">
         <a class="brand" href="#/">WEST SECURITY</a>
-        <span class="status"><span aria-hidden="true">●</span> Área protegida</span>
+        <div class="header-actions"><span class="status"><span aria-hidden="true">●</span> ${roleLabel}</span><button class="button text" id="logout-button" type="button">Cerrar sesión</button></div>
       </header>
       <section class="dashboard" aria-labelledby="protected-title">
         <div class="section-heading">
-          <div><span class="eyebrow">Sesión privada</span><h1 id="protected-title">Centro de control.</h1></div>
-          ${button('Nuevo registro', { variant: 'primary', type: 'button' })}
+          <div><span class="eyebrow">Sesión privada, ${user.username}</span><h1 id="protected-title">${isAdmin ? 'Centro de control.' : 'Panel operativo.'}</h1></div>
+          ${button(isAdmin ? 'Nuevo registro' : 'Consultar actividad', { variant: 'primary', type: 'button' })}
         </div>
-        ${alert('La sesión está activa y todos los cambios se guardan de forma segura.', 'success')}
+        ${alert(`Sesión iniciada como ${user.rol}. Todos los cambios se guardan de forma segura.`, 'success')}
         <div class="state-grid" aria-label="Estados de interfaz">
           ${loadingState('Cargando actividad', 'Consulta en curso')}
           ${emptyState('Sin alertas nuevas', 'Todo está en orden por ahora.')}

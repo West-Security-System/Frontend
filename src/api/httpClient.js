@@ -40,13 +40,14 @@ export async function request(path, options = {}) {
     })
     const data = await parseResponse(response)
     if (!response.ok) {
-      throw new ApiError(statusMessages[response.status] || 'La solicitud no pudo completarse.', {
+      const responseError = data && data.error ? data.error : data
+      throw new ApiError(responseError?.message || statusMessages[response.status] || 'La solicitud no pudo completarse.', {
         status: response.status,
-        details: data,
-        code: `HTTP_${response.status}`,
+        details: responseError,
+        code: responseError?.code || `HTTP_${response.status}`,
       })
     }
-    return data
+    return data && Object.prototype.hasOwnProperty.call(data, 'data') ? data.data : data
   } catch (error) {
     if (error instanceof ApiError) throw error
     if (error.name === 'AbortError') {
