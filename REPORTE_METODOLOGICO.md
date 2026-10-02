@@ -1,25 +1,24 @@
-# Reporte metodológico - Issue F01
+# Reporte metodológico - Issue F02
 
 ## Alcance
 
-Se creó la base del cliente web `west-security-frontend` con Vite, dejando dentro de `v01-issue-F01/` únicamente esta carpeta.
+Se copió y extendió el cliente de F01 en `v02-issue-F02/`, dejando dentro únicamente la carpeta `west-security-frontend`.
 
 ## Implementación
 
-- Se configuró `package.json` con los scripts `dev`, `build` y `preview`.
-- Se centralizó el acceso HTTP en `src/api/httpClient.js`, usando `fetch`, `credentials: 'include'` y `VITE_API_BASE_URL`.
-- Se unificó el timeout, el error de red y los mensajes para los estados 401, 403, 404, 409, 422 y 500 mediante `ApiError`.
-- Se separaron las vistas públicas y protegidas en `src/views/public/` y `src/views/protected/`.
-- Se agregó `.env.example` para documentar la configuración de API y timeout.
+- Se conservó la base Vite, el cliente HTTP y la separación pública/protegida de F01.
+- Se creó `src/components/ui.js` con botones, campos etiquetados, tablas, modales, alertas y estados de carga, vacío y error con reintento.
+- Se añadió un sistema visual global con variables de color, tipografía, espaciado, foco visible y adaptación responsive.
+- Se incluyeron `aria-live`, `role="alert"`, `role="status"`, etiquetas asociadas, tabla semántica y estados con icono y texto, no solo color.
 
 ## Registro de commit sugerido
 
-- `feat(front): agregar cliente HTTP y separación de vistas F01`
+- `feat(front): establecer sistema visual accesible y estados UI F02`
 
 ## Pull Request
 
-**Título:** `feat(front): initialize protected client foundation`
+**Título:** `feat(front): establish accessible frontend visual system`
 
-**Descripción:** Base inicial del frontend con transporte HTTP centralizado, manejo consistente de errores y separación de superficies públicas/protegidas.
+**Descripción:** Extensión de F01 con componentes reutilizables, sistema visual global, estados de carga/vacío/error, accesibilidad y responsive.
 
-**Referencia:** `Fixes frontend#F01`
+**Referencia:** `Fixes frontend#F02`
