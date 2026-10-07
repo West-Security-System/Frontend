@@ -17,6 +17,13 @@ function roleRoute(user) {
   return user?.rol === 'admin' ? 'admin' : 'guardia'
 }
 
+function activeSection(route, user) {
+  if (user.rol === 'admin' && route.startsWith('admin/usuarios')) return 'usuarios'
+  if (user.rol === 'admin' && route.startsWith('admin/locales')) return 'locales'
+  if (user.rol === 'guardia' && route.startsWith('guardia/horarios')) return 'horarios'
+  return user.rol
+}
+
 function replaceRoute(route) {
   window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/${route}`)
   renderRoute()
@@ -83,11 +90,11 @@ async function renderRoute() {
     replaceRoute(roleRoute(user))
     return
   }
-  if (route === 'admin' && user?.rol !== 'admin') {
+  if (route.startsWith('admin') && user?.rol !== 'admin') {
     replaceRoute(roleRoute(user))
     return
   }
-  if (route === 'guardia' && user?.rol !== 'guardia') {
+  if (route.startsWith('guardia') && user?.rol !== 'guardia') {
     replaceRoute(roleRoute(user))
     return
   }
@@ -97,7 +104,7 @@ async function renderRoute() {
     return
   }
   if (user) {
-    app.innerHTML = renderProtectedView(user)
+    app.innerHTML = renderProtectedView(user, activeSection(route, user))
     document.querySelector('#logout-button').addEventListener('click', async () => {
       await logout()
       navigateToLogin()
