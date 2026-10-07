@@ -8,16 +8,11 @@ import {
   modal,
   table,
 } from '../../components/ui.js'
+import { renderLayout } from '../../components/Layout.js'
 
-export function renderProtectedView(user) {
+export function renderProtectedView(user, activeSection = user.rol) {
   const isAdmin = user.rol === 'admin'
-  const roleLabel = isAdmin ? 'Administración' : 'Operaciones de guardia'
-  return `
-    <main class="page">
-      <header class="masthead">
-        <a class="brand" href="#/">WEST SECURITY</a>
-        <div class="header-actions"><span class="status"><span aria-hidden="true">●</span> ${roleLabel}</span><button class="button text" id="logout-button" type="button">Cerrar sesión</button></div>
-      </header>
+  const content = `
       <section class="dashboard" aria-labelledby="protected-title">
         <div class="section-heading">
           <div><span class="eyebrow">Sesión privada, ${user.username}</span><h1 id="protected-title">${isAdmin ? 'Centro de control.' : 'Panel operativo.'}</h1></div>
@@ -42,7 +37,6 @@ export function renderProtectedView(user) {
           </form>
         </section>
       </section>
-      ${modal('details-modal', 'Detalle del registro', 'El detalle de actividad aparecerá aquí cuando se seleccione un registro.')}
-    </main>
-  `
+      ${modal('details-modal', 'Detalle del registro', 'El detalle de actividad aparecerá aquí cuando se seleccione un registro.')}`
+  return renderLayout({ user, activeSection, content })
 }
