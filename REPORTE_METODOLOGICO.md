@@ -1,24 +1,24 @@
-# Reporte metodológico - Issue F04
+# Reporte metodológico - Issue F05
 
 ## Alcance
 
-Se copió y extendió el cliente de F03 en `v04-issue-F04/`, dejando dentro únicamente la carpeta `west-security-frontend`.
+Se extiende el cliente de F04 con administración de cuentas y disponibilidad de guardias dentro de `v05-issue-F05/west-security-frontend`.
 
 ## Implementación
 
-- Se conservó la autenticación, el cliente HTTP y el sistema visual accesible de F03.
-- Se creó `src/components/Layout.js` con encabezado, navegación principal, sección activa, datos de usuario y cierre de sesión.
-- La navegación se filtra por `user.rol`: las rutas y opciones administrativas no se renderizan para `guardia`, y el router redirige intentos directos a rutas no autorizadas.
-- El layout usa navegación horizontal desplazable en móvil y panel lateral en escritorio.
+- Se incorporó el directorio de usuarios con roles y estado de bloqueo.
+- Se permite crear, editar y eliminar usuarios; la cuenta actualmente autenticada no se puede eliminar desde la interfaz.
+- Se añadieron formularios para definir y quitar bloqueos por fecha o rango para guardias.
+- La vista informa estados vacíos y errores de carga, y vuelve a cargar los datos después de guardar cambios.
 
-## Registro de commit sugerido
+## Commit correspondiente
 
-- `feat(front): crear layout protegido y navegación por rol F04`
+`feat(front): administrar usuarios y disponibilidad F05`
 
 ## Pull Request
 
-**Título:** `feat(front): add responsive protected administration layout`
+**Título:** `feat(front): manage users and guard availability`
 
-**Descripción:** Extensión de F03 con layout compartido, navegación contextual, identidad de usuario, logout y protección visual/routing para usuarios guardia.
+**Descripción:** Extensión de F04 con CRUD de usuarios, asignación de roles, bloqueo de cuentas y gestión de días/rangos no disponibles para guardias.
 
-**Referencia:** `Fixes frontend#F04`
+**Referencia:** `Fixes frontend#F05`
