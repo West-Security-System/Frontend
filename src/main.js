@@ -1,8 +1,9 @@
 import './style.css'
 import { ApiError } from './api/httpClient.js'
 import { getCurrentUser, isUnauthorized, loadSession, login, logout } from './auth/session.js'
-import { httpClient } from './api/httpClient.js'
+import { adminUserApi } from './services/adminUserApi.js'
 import { renderBlockEntry, renderUsersView } from './views/admin/UsersView.js'
+import { mountAdminServices } from './hooks/adminServicesController.js'
 import { renderLoginView } from './views/public/LoginView.js'
 import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
@@ -127,7 +128,7 @@ function bindBlocksModal(users) {
       return
     }
     try {
-      await httpClient.put(`/admin/usuarios/${userId}/bloqueos`, { bloqueos })
+      await adminUserApi.updateBlocks(userId, bloqueos)
       closeModal('blocks-modal')
       showUsersAlert('Disponibilidad guardada correctamente.', 'success')
     } catch (requestError) {
@@ -161,7 +162,7 @@ function bindUsersView(currentUser, users) {
     const user = users.find((item) => Number(item.id) === Number(button.dataset.deleteUser))
     if (!window.confirm(`¿Eliminar la cuenta de ${user.username}?`)) return
     try {
-      await httpClient.delete(`/admin/usuarios?id=${user.id}`)
+      await adminUserApi.remove(user.id)
       await renderRoute()
     } catch (error) {
       showUsersAlert(apiErrorMessage(error))
@@ -188,8 +189,8 @@ function bindUsersView(currentUser, users) {
       return
     }
     try {
-      if (id) await httpClient.put('/admin/usuarios', { ...payload, id })
-      else await httpClient.post('/admin/usuarios', payload)
+      if (id) await adminUserApi.update({ ...payload, id })
+      else await adminUserApi.create(payload)
       closeModal('user-modal')
       await renderRoute()
     } catch (requestError) {
@@ -202,7 +203,7 @@ function bindUsersView(currentUser, users) {
 async function renderUsersRoute(user) {
   app.innerHTML = '<main class="page"><section class="auth-panel session-loading" role="status"><span class="loader" aria-hidden="true"></span><p>Cargando usuarios...</p></section></main>'
   try {
-    const response = await httpClient.get('/admin/usuarios')
+    const response = await adminUserApi.list()
     const users = response?.usuarios || []
     app.innerHTML = renderUsersView({ users, currentUser: user })
     bindUsersView(user, users)
@@ -254,6 +255,10 @@ async function renderRoute() {
   if (user) {
     if (route === 'admin/usuarios') {
       await renderUsersRoute(user)
+      return
+    }
+    if (route === 'admin/locales') {
+      await mountAdminServices(app, user)
       return
     }
     app.innerHTML = renderProtectedView(user, activeSection(route, user))
