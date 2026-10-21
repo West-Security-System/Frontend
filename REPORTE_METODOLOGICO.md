@@ -1,24 +1,26 @@
-# Reporte metodológico - Issue F05
+# Reporte metodológico - Issue F06
 
 ## Alcance
 
-Se extiende el cliente de F04 con administración de cuentas y disponibilidad de guardias dentro de `v05-issue-F05/west-security-frontend`.
+Se extiende el cliente de F05 dentro de `v06-issue-F06/west-security-frontend` para administrar servicios, coordenadas y horarios.
 
 ## Implementación
 
-- Se incorporó el directorio de usuarios con roles y estado de bloqueo.
-- Se permite crear, editar y eliminar usuarios; la cuenta actualmente autenticada no se puede eliminar desde la interfaz.
-- Se añadieron formularios para definir y quitar bloqueos por fecha o rango para guardias.
-- La vista informa estados vacíos y errores de carga, y vuelve a cargar los datos después de guardar cambios.
+- Se implementó el CRUD de servicios con validación de nombre único y rangos de latitud y longitud.
+- Se muestran las coordenadas registradas y se solicitan confirmaciones para eliminar servicios y horarios.
+- Se agregó la selección de servicio y la consulta de horarios filtrada por `servicio_id`.
+- Se implementó el CRUD de horarios con días de semana, hora inicial, hora final, capacidad y detección de duplicados.
+- Se centralizaron las llamadas HTTP en `src/services`, validaciones y utilidades en `src/utils`, estado y controladores en `src/hooks`, y UI en `src/components` y `src/views`.
+- La interfaz contempla listas vacías y errores de carga, validación y conflictos del servidor.
 
 ## Commit correspondiente
 
-`feat(front): administrar usuarios y disponibilidad F05`
+`feat(front): gestionar servicios y horarios F06`
 
 ## Pull Request
 
-**Título:** `feat(front): manage users and guard availability`
+**Título:** `feat(front): manage services coordinates and schedules`
 
-**Descripción:** Extensión de F04 con CRUD de usuarios, asignación de roles, bloqueo de cuentas y gestión de días/rangos no disponibles para guardias.
+**Descripción:** Extensión de F05 con CRUD de servicios, coordenadas y horarios, selector de servicio, validaciones y estados de error/vacío.
 
-**Referencia:** `Fixes frontend#F05`
+**Referencia:** `Fixes frontend#F06`
