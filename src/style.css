@@ -126,6 +126,40 @@ tbody th { font-weight: 700; }
   .service-actions { width: 100%; justify-content: flex-end; }
   .weekday-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Issue F07: operational dashboard and guard assignments */
+.dashboard-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.dashboard-actions .button { width: auto; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 28px 0 48px; }
+.dashboard-panel { min-width: 0; margin: 0; }
+.records-panel { grid-column: 1 / -1; }
+.dashboard-loading { display: flex; align-items: center; gap: 14px; min-height: 180px; margin: 28px 0; }
+.dashboard-loading p { margin: 0; }
+.dashboard-error { margin: 28px 0; border-color: #e5b7b1; }
+.guard-list, .alert-list, .assignment-list { display: grid; gap: 10px; margin: 22px 0 0; padding: 0; list-style: none; }
+.guard-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--ink); font: .9rem/1.4 Arial, sans-serif; }
+.guard-indicator { width: 9px; height: 9px; border-radius: 50%; background: #36835e; box-shadow: 0 0 0 3px #e1efe5; }
+.dashboard-empty { margin-top: 20px; padding: 18px; color: var(--muted); background: #f4f6f2; font: .9rem/1.5 Arial, sans-serif; }
+.alert-list li { display: grid; gap: 5px; padding: 13px; border-left: 3px solid var(--warning); background: #fbf2dc; font: .86rem/1.4 Arial, sans-serif; }
+.alert-list li.notice { border-left-color: var(--green); background: #e7f0e9; }
+.alert-list strong { color: var(--ink); }
+.alert-list span { color: var(--muted); }
+.dashboard-table { min-width: 650px; }
+.dashboard-table td, .dashboard-table th { vertical-align: middle; }
+.assignment-schedule { margin: 10px 0 0; font-weight: 700; }
+.assignment-list { margin: 12px 0 22px; }
+.assignment-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--line); font: .9rem/1.4 Arial, sans-serif; }
+.assignment-empty { margin: 12px 0 22px; font-size: .9rem; }
+.assignments-modal { max-height: min(90vh, 760px); overflow-y: auto; }
+.assignments-modal h3 { margin-top: 28px; }
+.assignments-modal select { font: inherit; }
+.assignments-modal select:disabled { color: var(--muted); background: #edf0ec; }
+@media (max-width: 760px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .records-panel { grid-column: auto; }
+  .dashboard-actions { justify-content: flex-start; }
+  .dashboard-actions .button { flex: 1 1 auto; }
+}
 .header-actions { display: flex; align-items: center; gap: 18px; }
 .auth-page { display: flex; flex-direction: column; }
 .auth-panel { width: min(100%, 600px); margin: 12vh auto 0; padding: clamp(24px, 5vw, 52px); border: 1px solid var(--line); background: var(--paper); }

@@ -4,6 +4,7 @@ import { renderServiceForm } from '../components/admin/ServiceForm.js'
 import { renderServicesView } from '../views/admin/ServicesView.js'
 import { createAdminServicesState, refreshAdminServices, requestMessage, saveSchedule, saveService, selectedService } from './useAdminServices.js'
 import { uniqueSchedules } from '../utils/serviceValidation.js'
+import { openAssignmentsModal } from './adminAssignmentsController.js'
 
 let activeListeners
 
@@ -81,9 +82,15 @@ async function deleteService(app, state, service) {
 }
 
 async function handleScheduleClick(event, app, state) {
-  const target = event.target.closest('[data-edit-schedule], [data-delete-schedule]')
+  const target = event.target.closest('[data-assign-schedule], [data-edit-schedule], [data-delete-schedule]')
   if (!target) return false
-  const schedule = state.schedules.find((item) => String(item.id) === String(target.dataset.editSchedule || target.dataset.deleteSchedule))
+  const scheduleId = target.dataset.assignSchedule || target.dataset.editSchedule || target.dataset.deleteSchedule
+  const schedule = state.schedules.find((item) => String(item.id) === String(scheduleId))
+  if (!schedule) return true
+  if (target.dataset.assignSchedule) {
+    await openAssignmentsModal(app, schedule, selectedService(state))
+    return true
+  }
   if (target.dataset.editSchedule) showScheduleModal(app, selectedService(state), schedule)
   if (target.dataset.deleteSchedule) await deleteSchedule(app, state, schedule)
   return true
