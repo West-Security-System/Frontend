@@ -139,6 +139,8 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 |---|---|---|---|---|
 | Complejidad alta (Compl) | **9** bloque(s) de complejidad alta | máximo 5 por 1000 LOC (tenés 1063 LOC) | 9 hallazgo(s); el máximo para 1,063 LOC es 5.3 | Extraé condiciones y ramas a funciones con nombre propio, usá retornos tempranos y evitá anidar `if`/`switch`. Meta: ≤5 bloques por 1000 LOC. |
 
+> **Tests (informativo):** hoy tenés **0** archivo(s) de test; la meta es **5**, pero **no** es una compuerta del semáforo. Para acercarte, agregá tests de los flujos principales (servicios y endpoints) y corré la suite con coverage.
+
 ## 6. Anexo: dónde mirar
 
 Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
