@@ -4,6 +4,7 @@ import { isUnauthorized, loadSession, login, logout } from './auth/session.js'
 import { mountAdminDashboard } from './hooks/adminDashboardController.js'
 import { mountAdminServices } from './hooks/adminServicesController.js'
 import { mountAdminUsers } from './hooks/adminUsersController.js'
+import { mountGuardServices } from './hooks/guardServicesController.js'
 import { renderLoginView } from './views/public/LoginView.js'
 import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
@@ -90,9 +91,10 @@ function correctRoleRoute(route, user) {
 }
 
 function bindLogout() {
-  const button = app.querySelector('#logout-button')
-  if (!button) return
-  button.addEventListener('click', async () => {
+  if (app.dataset.logoutBound) return
+  app.dataset.logoutBound = 'true'
+  app.addEventListener('click', async (event) => {
+    if (!event.target.closest('#logout-button')) return
     await logout()
     navigateToLogin()
   })
@@ -109,6 +111,10 @@ async function renderPrivateRoute(route, user) {
   }
   if (route === 'admin/locales') {
     await mountAdminServices(app, user)
+    return bindLogout()
+  }
+  if (route === 'guardia/horarios') {
+    await mountGuardServices(app, user)
     return bindLogout()
   }
   app.innerHTML = renderProtectedView(user, activeSection(route, user))
