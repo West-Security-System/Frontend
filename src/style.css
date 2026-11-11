@@ -161,6 +161,12 @@ tbody th { font-weight: 700; }
 .guard-schedule-state, .location-status { margin: 14px 0; font: .9rem/1.5 Arial, sans-serif; }
 #guard-checkin-form select { min-height: 46px; padding: 10px 12px; border: 1px solid #9daaa1; border-radius: 2px; color: var(--ink); background: #fff; font: inherit; }
 #guard-checkin-form select:disabled, #guard-checkin-form .button:disabled { cursor: not-allowed; opacity: .6; }
+.guard-exit-page { max-width: 860px; }
+.guard-exit-form { display: grid; gap: 18px; margin-top: 20px; }
+.guard-exit-form textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid #9daaa1; border-radius: 2px; color: var(--ink); background: #fff; font: inherit; resize: vertical; }
+.guard-exit-form .button:disabled { cursor: not-allowed; opacity: .6; }
+.guard-exit-feedback { margin: 18px 0; padding: 14px; border-left: 3px solid var(--danger); background: #f9e9e6; }
+.guard-exit-feedback.success { border-color: var(--green); background: #e7f0e9; }
 @media (max-width: 760px) {
   .dashboard-grid { grid-template-columns: 1fr; }
   .records-panel { grid-column: auto; }

@@ -29,3 +29,15 @@ test('assigned-service API submits a check-in using POST /guardias', async (cont
   assert.deepEqual(await guardScheduleApi.registerEntry(entry), { registro: { id: 12, estado: 'abierto' } })
   assert.deepEqual(submitted, { path: '/guardias', body: entry })
 })
+
+test('guard schedule API submits an exit with coordinates and observations', async (context) => {
+  const exit = { latitud: -32.9, longitud: -68.8, observaciones: 'Novedad de turno' }
+  let submitted
+  context.mock.method(httpClient, 'post', async (path, body) => {
+    submitted = { path, body }
+    return { registro: { id: 12, estado: 'cerrado' } }
+  })
+
+  assert.deepEqual(await guardScheduleApi.registerExit(exit), { registro: { id: 12, estado: 'cerrado' } })
+  assert.deepEqual(submitted, { path: '/guardias/egreso', body: exit })
+})

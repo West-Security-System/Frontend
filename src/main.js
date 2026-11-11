@@ -9,6 +9,7 @@ import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
 import { activeSection, roleRoute, routeCorrection, routeName } from './utils/routes.js'
 import { mountGuardSchedules } from './hooks/guardScheduleController.js'
+import { mountGuardExit } from './hooks/guardExitController.js'
 
 const app = document.querySelector('#app')
 let isBootstrapping = false
@@ -88,6 +89,7 @@ async function renderPrivateRoute(route, user) {
     'admin/locales': () => mountAdminServices(app, user),
     guardia: () => mountGuardSchedules(app, user),
     'guardia/horarios': () => mountGuardSchedules(app, user),
+    'guardia/egreso': () => mountGuardExit(app, user),
   }
   const mountView = privateRoutes[route]
   if (mountView) {
