@@ -4,6 +4,7 @@ const activeRoutes = {
     { prefix: 'admin/locales', section: 'locales' },
   ],
   guardia: [
+    { prefix: 'guardia/egreso', section: 'egreso' },
     { prefix: 'guardia/horarios', section: 'horarios' },
     { prefix: 'guardia', section: 'horarios' },
   ],

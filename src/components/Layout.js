@@ -7,6 +7,7 @@ const navigationByRole = {
   guardia: [
     { href: '#/guardia', label: 'Mi actividad', key: 'guardia' },
     { href: '#/guardia/horarios', label: 'Mis horarios', key: 'horarios' },
+    { href: '#/guardia/egreso', label: 'Registrar egreso', key: 'egreso' },
   ],
 }
 

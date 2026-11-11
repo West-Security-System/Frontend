@@ -1,43 +1,45 @@
-# Reporte metodológico — Issue 8 / Frontend F08
+# Reporte metodológico — Issue 9 / Frontend F09
 
-## Alcance
+## Alcance y arquitectura
 
-- Se copió la base de F07 a `front/v08-issue-F08/west-security-frontend/`.
-- Los cambios de aplicación, pruebas, configuración y reporte se limitaron a F08.
-- Se conservó el proyecto en JavaScript modular y sus capas `components/`, `views/`, `services/`, `hooks/`, `utils/` y `tests/`. El proyecto base usa JavaScript nativo con Vite, no React; por eso `useGeolocation` sigue el patrón de hooks/controladores existente en vez de introducir una dependencia de framework ajena a la arquitectura.
-- No se copió el `.env` local de F07. Se conserva únicamente `.env.example`.
+- Se copió F08 a `front/v09-issue-F09/west-security-frontend/` y se limitaron a F09 todos los cambios de código, pruebas y documentación.
+- Se excluyeron del copiado el `.env` local, `node_modules`, `coverage/` y `dist/`; solo se conserva `.env.example`.
+- Se mantuvo la arquitectura existente de JavaScript modular con Vite: `components/`, `views/`, `services/`, `hooks/`, `utils/` y `tests/`. No se incorporó un framework nuevo.
+- Las vistas y componentes no hacen solicitudes HTTP. `services/guardScheduleApi.js` delega el acceso al cliente HTTP compartido.
 
-## Implementación de Issue 8
+## Implementación de Issue 9
 
-- `services/guardScheduleApi.js` encapsula `GET /api/mis-servicios`, la consulta de horarios asignados por servicio y el envío del ingreso a `POST /api/guardias`.
-- `hooks/guardScheduleController.js` carga los servicios del guardia, actualiza el selector de horarios al cambiar de servicio, conserva estados de carga/error y prepara el payload de ingreso.
-- `hooks/useGeolocation.js` usa `navigator.geolocation` y normaliza latitud, longitud y precisión. Expone estados `idle`, `loading`, `ready`, `permission-denied`, `unavailable` y `unsupported`, con mensajes explicativos y manejo de errores de permiso, timeout e incompatibilidad.
-- `views/protected/GuardSchedulesView.js` presenta los selectores dinámicos, un estado vacío accesible para guardias sin asignaciones, los datos de precisión y los estados de ubicación.
-- Los botones de captura e ingreso se deshabilitan mientras se obtiene la posición o no hay datos suficientes. La precisión se muestra al guardia y el ingreso envía las coordenadas requeridas por el backend.
-
-## Refactorizaciones de complejidad
-
-Se trabajaron los seis archivos indicados en el anexo de la evaluación:
-
-- `src/components/admin/ScheduleForm.js`: trasladé la preparación de días, título, opciones y campos a `src/utils/scheduleForm.js`; el render del componente queda centrado en el marcado.
-- `src/hooks/adminServicesController.js`: separé la selección de acciones por `data-*`, usé mapas para acciones de servicios/horarios y formularios, y aislé el cierre de modales.
-- `src/hooks/adminUsersController.js`: extraje el parseo/validación de bloqueos a `src/utils/adminUserData.js`, separé la construcción y persistencia de usuarios, y mantuve retornos tempranos para formularios y acciones delegadas.
-- `src/hooks/useAdminServices.js`: moví la lectura del formulario a `src/utils/formData.js` y la selección/feedback a `src/utils/adminServiceState.js`; el alta y edición se despachan mediante mapas de acciones.
-- `src/main.js`: extraje normalización, sección activa y corrección de rutas a `src/utils/routes.js`; las rutas privadas y públicas se resuelven mediante mapas en lugar de cadenas largas de condicionales.
-- `src/utils/serviceValidation.js`: distribuí las reglas de validación en funciones pequeñas y una lista ordenada de validadores; separé comprobaciones geográficas, duplicados y normalización de horarios.
-
-Los auxiliares extraídos se mantienen en `utils/`. Las funciones de los seis archivos revisados quedaron con responsabilidades y ramas locales acotadas; el cálculo final del criterio Compl y del índice 100/100 depende del evaluador de cátedra, que no está disponible en este workspace.
+- Se creó la ruta privada de guardia `#/guardia/egreso`, con enlace visible en la navegación.
+- `views/protected/GuardExitView.js` integra el formulario de salida dentro del layout y marca activa la sección de egreso.
+- `components/guard/ShiftExitForm.js` presenta el campo opcional de observaciones/novedades (máximo 2.000 caracteres), el estado de geolocalización y la confirmación.
+- `hooks/guardExitController.js` solicita una ubicación GPS nueva al confirmar, prepara las coordenadas y observaciones, y delega el cierre a `guardScheduleApi.registerExit`.
+- El formulario evita reenvíos durante la espera de GPS y mientras procesa la respuesta; luego de éxito impide un segundo cierre.
+- Los errores del servidor se presentan con mensajes específicos para salida fuera de radio (403), ausencia de turno activo (404), cierre concurrente (409) y sesión vencida (401). Los errores de permiso GPS e incompatibilidad se muestran mediante el hook existente `useGeolocation.js`.
+- El servicio envía `latitud`, `longitud` y `observaciones` a `POST /api/guardias/egreso`. La validación del turno activo y del radio de 100 metros corresponde al backend.
 
 ## Pruebas y evidencias
 
-- [x] 9 archivos de pruebas automatizadas bajo `tests/`.
-- [x] 25 pruebas aprobadas con `npm test` y `npm run test:coverage`.
-- [x] API: rutas, parámetros codificados, payload de ingreso y respuesta.
-- [x] Geolocalización: captura y precisión, espera, permiso denegado, timeout, ubicación no disponible e incompatibilidad.
-- [x] Vista: ausencia de asignaciones, selectores dinámicos, escape HTML, precisión visible y botones deshabilitados durante carga.
-- [x] Utilidades: rutas/permisos, validaciones de servicios y horarios, duplicados, bloques de disponibilidad y construcción de formularios.
+- [x] 35 pruebas aprobadas en 11 archivos de pruebas.
+- [x] `npm run test:coverage` genera `west-security-frontend/coverage/coverage-summary.json`.
+- [x] Cobertura global de `src/**/*.js`: **40,64% de líneas/sentencias**, **82,92% de ramas** y **63,77% de funciones**. Incluye módulos heredados de F08.
+- [x] Cobertura de los módulos nuevos: `guardExitController.js` 100% de líneas; `GuardExitView.js` 100%; `ShiftExitForm.js` 100%; `guardScheduleApi.js` 100%.
+- [x] Se probaron éxito, geolocalización pendiente, permiso denegado, doble envío, radio excedido, turno inexistente y cierre concurrente.
 - [x] `npm run build` finalizó correctamente.
-- [x] Inspección de `components/` y `views/`: sin llamadas `fetch`/`axios`.
-- [x] Inspección de `src/`: sin `console.log`, `console.error` ni `debugger`.
+- [x] `node --check` pasó en los archivos JavaScript de `src/` y `tests/`.
+- [x] Inspección estática: sin `fetch`/`axios` en `views/` o `components/`, y sin `console.log`, `console.error` ni `debugger` en `src/`.
+- [x] El componente del formulario tiene 40 líneas, por debajo del límite de 120.
 
-`npm run test:coverage` genera `west-security-frontend/coverage/coverage-summary.json`. La cobertura global de `src/**/*.js` es **35.26% de líneas**, **81.13% de ramas** y **60% de funciones**; el alcance global incluye módulos heredados de F07 y el punto de arranque del navegador. En los módulos de la funcionalidad nueva o auxiliares cubiertos directamente por las pruebas, `guardScheduleApi.js`, `routes.js`, `serviceValidation.js`, `adminUserData.js`, `adminServiceState.js` y `scheduleForm.js` tienen 100% de líneas; `useGeolocation.js`, 95.77%; y `GuardSchedulesView.js`, 98.76%. Estos porcentajes se ofrecen como evidencia del estado medido, no como una cobertura global superior al valor reportado.
+## Contrato de observaciones
+
+El cliente recoge y envía `observaciones` junto con las coordenadas. El backend de la versión disponible para esta entrega debe aceptar y persistir ese campo para que las novedades queden almacenadas junto al registro; no se modificó el backend porque el alcance solicitado prohíbe cambios fuera de F09.
+
+## Checklist de aceptación
+
+- [x] Flujo de egreso accesible desde la navegación privada de guardia.
+- [x] Coordenadas capturadas al confirmar mediante el hook de geolocalización existente.
+- [x] Observaciones editables y enviadas junto con la solicitud de egreso.
+- [x] Mensaje de espera GPS, bloqueo de doble clic, confirmación exitosa y errores de egreso.
+- [x] Lógica HTTP confinada a `services/`.
+- [x] Suite automatizada activa y artefacto de cobertura generado.
+
+El build, las pruebas y las métricas indicadas se verificaron localmente. La certificación de Calidad 100/100 o de complejidad por una herramienta externa no está disponible en este entorno y no se declara como resultado certificado.

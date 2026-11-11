@@ -15,4 +15,8 @@ export const guardScheduleApi = {
   registerEntry(entry) {
     return httpClient.post('/guardias', entry)
   },
+
+  registerExit(exit) {
+    return httpClient.post('/guardias/egreso', exit)
+  },
 }
