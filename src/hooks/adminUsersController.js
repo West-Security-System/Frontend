@@ -1,13 +1,8 @@
 import { adminUserApi } from '../services/adminUserApi.js'
 import { renderBlockEntry, renderUsersView } from '../views/admin/UsersView.js'
+import { apiMessage, invalidBlocks, readBlocks } from '../utils/adminUserData.js'
 
 let activeListeners
-
-function apiMessage(error) {
-  if (error.status === 409) return `Conflicto: ${error.message}`
-  if (error.status === 422) return `Validación: ${error.message}`
-  return error.message || 'No se pudo completar la operación.'
-}
 
 function showError(app, selector, message) {
   const target = app.querySelector(selector)
@@ -56,20 +51,6 @@ function startBlocks(app, users, id) {
   openModal(app, 'blocks-modal')
 }
 
-function readBlocks(entries) {
-  return [...entries.querySelectorAll('.block-entry')].map((entry) => {
-    const type = entry.querySelector('[name="tipo"]').value
-    const block = { tipo: type, motivo: entry.querySelector('[name="motivo"]').value.trim() }
-    if (type === 'fecha') block.fecha = entry.querySelector('[name="fecha"]').value
-    if (type === 'rango') Object.assign(block, { fecha_inicio: entry.querySelector('[name="fecha_inicio"]').value, fecha_fin: entry.querySelector('[name="fecha_fin"]').value })
-    return block
-  })
-}
-
-function invalidBlocks(blocks) {
-  return blocks.some((block) => block.tipo === 'fecha' ? !block.fecha : (!block.fecha_inicio || !block.fecha_fin))
-}
-
 async function saveBlocks(event, app) {
   event.preventDefault()
   const form = event.currentTarget
@@ -95,16 +76,39 @@ async function saveUser(event, app, sessionUser) {
   event.preventDefault()
   const form = event.currentTarget
   const id = form.elements.id.value
-  const payload = { username: form.elements.username.value.trim(), rol: form.elements.rol.value, bloqueado: form.elements.bloqueado.checked }
-  if (form.elements.password.value) payload.password = form.elements.password.value
-  if (!payload.username || (!id && !payload.password)) return showError(app, '#user-form-error', 'Username y contraseña son obligatorios al crear una cuenta.')
+  const payload = readUserPayload(form)
+  if (isMissingRequiredUserData(id, payload)) {
+    return showError(app, '#user-form-error', 'Username y contraseña son obligatorios al crear una cuenta.')
+  }
   try {
-    if (id) await adminUserApi.update({ ...payload, id })
-    else await adminUserApi.create(payload)
+    await persistUser(id, payload)
     await mountAdminUsers(app, sessionUser)
   } catch (error) {
     showError(app, '#user-form-error', apiMessage(error))
   }
+}
+
+function readUserPayload(form) {
+  const payload = {
+    username: form.elements.username.value.trim(),
+    rol: form.elements.rol.value,
+    bloqueado: form.elements.bloqueado.checked,
+  }
+  const password = form.elements.password.value
+  return password ? { ...payload, password } : payload
+}
+
+function isMissingRequiredUserData(id, payload) {
+  return !payload.username || (!id && !payload.password)
+}
+
+async function persistUser(id, payload) {
+  const actions = {
+    update: () => adminUserApi.update({ ...payload, id }),
+    create: () => adminUserApi.create(payload),
+  }
+  const action = id ? actions.update : actions.create
+  await action()
 }
 
 async function deleteUser(app, user, sessionUser) {
@@ -125,20 +129,42 @@ function changeBlockType(event, app) {
 }
 
 function manageBlockEntry(event, app) {
-  if (event.target.matches('.remove-block')) return event.target.closest('.block-entry').remove()
+  if (event.target.matches('.remove-block')) return removeBlockEntry(event.target)
   if (!event.target.closest('#add-block-button')) return
+  return addBlockEntry(app)
+}
+
+function removeBlockEntry(target) {
+  target.closest('.block-entry').remove()
+}
+
+function addBlockEntry(app) {
   const entries = app.querySelector('#block-entries')
   entries.insertAdjacentHTML('beforeend', renderBlockEntry(entries.children.length))
+}
+
+function userAction(target) {
+  if (target.dataset.closeModal) {
+    return (app) => closeModal(app, target.dataset.closeModal)
+  }
+  const actions = {
+    'new-user-button': (app) => startNewUser(app),
+    editUser: (app, user, users) => editUser(app, users, target.dataset.editUser),
+    deleteUser: (app, user, users) => deleteUser(app, users.find((item) => String(item.id) === target.dataset.deleteUser), user),
+    blockUser: (app, user, users) => startBlocks(app, users, target.dataset.blockUser),
+  }
+  const actionKey = target.id === 'new-user-button'
+    ? target.id
+    : Object.keys(actions).find((key) => target.dataset[key])
+  return actions[actionKey]
 }
 
 async function handleUserClick(event, app, user, users) {
   const target = event.target.closest('[data-close-modal], #new-user-button, [data-edit-user], [data-delete-user], [data-block-user]')
   if (!target) return
-  if (target.dataset.closeModal) return closeModal(app, target.dataset.closeModal)
-  if (target.id === 'new-user-button') return startNewUser(app)
-  if (target.dataset.editUser) return editUser(app, users, target.dataset.editUser)
-  if (target.dataset.deleteUser) return deleteUser(app, users.find((item) => String(item.id) === target.dataset.deleteUser), user)
-  if (target.dataset.blockUser) return startBlocks(app, users, target.dataset.blockUser)
+  const action = userAction(target)
+  if (!action) return
+  return action(app, user, users)
 }
 
 function bindUserEvents(app, user, users) {

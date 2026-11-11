@@ -5,8 +5,26 @@ import { renderServicesView } from '../views/admin/ServicesView.js'
 import { createAdminServicesState, refreshAdminServices, requestMessage, saveSchedule, saveService, selectedService } from './useAdminServices.js'
 import { uniqueSchedules } from '../utils/serviceValidation.js'
 import { openAssignmentsModal } from './adminAssignmentsController.js'
+import { findDataAction } from '../utils/domActions.js'
 
 let activeListeners
+
+const serviceActionKeys = {
+  selectService: 'selectService',
+  editService: 'editService',
+  deleteService: 'deleteService',
+}
+
+const scheduleActionKeys = {
+  assignSchedule: 'assignSchedule',
+  editSchedule: 'editSchedule',
+  deleteSchedule: 'deleteSchedule',
+}
+
+const formActions = {
+  service: { save: saveService, errorSelector: '#service-form-error' },
+  schedule: { save: saveSchedule, errorSelector: '#schedule-form-error' },
+}
 
 function showServiceModal(app, service = null) {
   const oldModal = app.querySelector('#service-modal')
@@ -59,16 +77,23 @@ async function executeMutation(app, state, action) {
 async function handleServiceClick(event, app, state) {
   const target = event.target.closest('[data-select-service], [data-edit-service], [data-delete-service]')
   if (!target) return false
-  const service = serviceFor(state, target.dataset.selectService || target.dataset.editService || target.dataset.deleteService)
-  if (target.dataset.selectService) {
-    state.selectedId = String(service.id)
-    state.feedback = ''
-    await refreshAndDraw(app, state)
-    return true
+  const actionKey = findDataAction(target, serviceActionKeys)
+  const serviceId = target.dataset[actionKey]
+  const service = serviceFor(state, serviceId)
+  const actions = {
+    selectService: () => selectService(app, state, service),
+    editService: () => showServiceModal(app, service),
+    deleteService: () => deleteService(app, state, service),
   }
-  if (target.dataset.editService) showServiceModal(app, service)
-  if (target.dataset.deleteService) await deleteService(app, state, service)
-  return true
+  await actions[actionKey]?.()
+  return Boolean(actionKey)
+}
+
+async function selectService(app, state, service) {
+  if (!service) return
+  state.selectedId = String(service.id)
+  state.feedback = ''
+  await refreshAndDraw(app, state)
 }
 
 async function deleteService(app, state, service) {
@@ -84,15 +109,16 @@ async function deleteService(app, state, service) {
 async function handleScheduleClick(event, app, state) {
   const target = event.target.closest('[data-assign-schedule], [data-edit-schedule], [data-delete-schedule]')
   if (!target) return false
-  const scheduleId = target.dataset.assignSchedule || target.dataset.editSchedule || target.dataset.deleteSchedule
+  const actionKey = findDataAction(target, scheduleActionKeys)
+  const scheduleId = target.dataset[actionKey]
   const schedule = state.schedules.find((item) => String(item.id) === String(scheduleId))
   if (!schedule) return true
-  if (target.dataset.assignSchedule) {
-    await openAssignmentsModal(app, schedule, selectedService(state))
-    return true
+  const actions = {
+    assignSchedule: () => openAssignmentsModal(app, schedule, selectedService(state)),
+    editSchedule: () => showScheduleModal(app, selectedService(state), schedule),
+    deleteSchedule: () => deleteSchedule(app, state, schedule),
   }
-  if (target.dataset.editSchedule) showScheduleModal(app, selectedService(state), schedule)
-  if (target.dataset.deleteSchedule) await deleteSchedule(app, state, schedule)
+  await actions[actionKey]?.()
   return true
 }
 
@@ -107,28 +133,41 @@ async function deleteSchedule(app, state, schedule) {
 }
 
 async function onClick(event, app, state) {
-  if (event.target.closest('[data-close-service]')) return app.querySelector('#service-modal').hidden = true
-  if (event.target.closest('[data-close-schedule]')) return app.querySelector('#schedule-modal').hidden = true
-  if (event.target.closest('#new-service-button')) return showServiceModal(app)
-  if (event.target.closest('#new-schedule-button')) return showScheduleModal(app, selectedService(state))
+  const actions = [
+    { selector: '[data-close-service]', run: () => hideModal(app, '#service-modal') },
+    { selector: '[data-close-schedule]', run: () => hideModal(app, '#schedule-modal') },
+    { selector: '#new-service-button', run: () => showServiceModal(app) },
+    { selector: '#new-schedule-button', run: () => showScheduleModal(app, selectedService(state)) },
+  ]
+  const action = actions.find(({ selector }) => event.target.closest(selector))
+  if (action) return action.run()
   if (await handleServiceClick(event, app, state)) return
   await handleScheduleClick(event, app, state)
 }
 
+function hideModal(app, selector) {
+  app.querySelector(selector).hidden = true
+}
+
 async function onSubmit(event, app, state) {
   const form = event.target
-  if (!form.matches('#service-form, #schedule-form')) return
+  const formType = getFormType(form)
+  if (!formType) return
   event.preventDefault()
-  const savingService = form.matches('#service-form')
   try {
-    if (savingService) await saveService(state, form)
-    else await saveSchedule(state, form)
+    await formActions[formType].save(state, form)
     await refreshAdminServices(state)
     draw(app, state)
   } catch (error) {
-    const errorElement = app.querySelector(savingService ? '#service-form-error' : '#schedule-form-error')
+    const errorElement = app.querySelector(formActions[formType].errorSelector)
     errorElement.textContent = requestMessage(error)
   }
+}
+
+function getFormType(form) {
+  if (form.matches('#service-form')) return 'service'
+  if (form.matches('#schedule-form')) return 'schedule'
+  return ''
 }
 
 export async function mountAdminServices(app, user) {

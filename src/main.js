@@ -4,29 +4,15 @@ import { isUnauthorized, loadSession, login, logout } from './auth/session.js'
 import { mountAdminDashboard } from './hooks/adminDashboardController.js'
 import { mountAdminServices } from './hooks/adminServicesController.js'
 import { mountAdminUsers } from './hooks/adminUsersController.js'
-import { mountGuardServices } from './hooks/guardServicesController.js'
 import { renderLoginView } from './views/public/LoginView.js'
 import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
+import { activeSection, roleRoute, routeCorrection, routeName } from './utils/routes.js'
+import { mountGuardSchedules } from './hooks/guardScheduleController.js'
 
 const app = document.querySelector('#app')
 let isBootstrapping = false
 let loginError = ''
-
-function routeName() {
-  return window.location.hash.replace(/^#\/?/, '') || 'home'
-}
-
-function roleRoute(user) {
-  return user?.rol === 'admin' ? 'admin' : 'guardia'
-}
-
-function activeSection(route, user) {
-  if (user.rol === 'admin' && route.startsWith('admin/usuarios')) return 'usuarios'
-  if (user.rol === 'admin' && route.startsWith('admin/locales')) return 'locales'
-  if (user.rol === 'guardia' && route.startsWith('guardia/horarios')) return 'horarios'
-  return user.rol
-}
 
 function replaceRoute(route) {
   window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/${route}`)
@@ -78,43 +64,34 @@ async function currentSession(route) {
   }
 }
 
-function isPrivateRoute(route) {
-  return route === 'admin' || route === 'guardia' || route === 'app' || route.startsWith('admin/') || route.startsWith('guardia/')
-}
-
 function correctRoleRoute(route, user) {
-  if (!user && isPrivateRoute(route)) return navigateToLogin()
-  if (user && ['login', 'home', 'app'].includes(route)) return replaceRoute(roleRoute(user))
-  if (user?.rol !== 'admin' && route.startsWith('admin')) return replaceRoute(roleRoute(user))
-  if (user?.rol !== 'guardia' && route.startsWith('guardia')) return replaceRoute(roleRoute(user))
-  return false
+  const correction = routeCorrection(route, user)
+  if (!correction) return false
+  if (correction === 'login') navigateToLogin()
+  else replaceRoute(correction)
+  return true
 }
 
 function bindLogout() {
-  if (app.dataset.logoutBound) return
-  app.dataset.logoutBound = 'true'
-  app.addEventListener('click', async (event) => {
-    if (!event.target.closest('#logout-button')) return
+  const button = app.querySelector('#logout-button')
+  if (!button) return
+  button.addEventListener('click', async () => {
     await logout()
     navigateToLogin()
   })
 }
 
 async function renderPrivateRoute(route, user) {
-  if (route === 'admin') {
-    await mountAdminDashboard(app, user)
-    return bindLogout()
+  const privateRoutes = {
+    admin: () => mountAdminDashboard(app, user),
+    'admin/usuarios': () => mountAdminUsers(app, user),
+    'admin/locales': () => mountAdminServices(app, user),
+    guardia: () => mountGuardSchedules(app, user),
+    'guardia/horarios': () => mountGuardSchedules(app, user),
   }
-  if (route === 'admin/usuarios') {
-    await mountAdminUsers(app, user)
-    return bindLogout()
-  }
-  if (route === 'admin/locales') {
-    await mountAdminServices(app, user)
-    return bindLogout()
-  }
-  if (route === 'guardia/horarios') {
-    await mountGuardServices(app, user)
+  const mountView = privateRoutes[route]
+  if (mountView) {
+    await mountView()
     return bindLogout()
   }
   app.innerHTML = renderProtectedView(user, activeSection(route, user))
@@ -122,11 +99,15 @@ async function renderPrivateRoute(route, user) {
 }
 
 async function renderRouteContent(route, user) {
-  if (route === 'login') {
-    app.innerHTML = renderLoginView({ errorMessage: loginError })
-    return bindLoginForm()
+  const publicRoutes = {
+    login: () => {
+      app.innerHTML = renderLoginView({ errorMessage: loginError })
+      bindLoginForm()
+    },
+    home: () => { app.innerHTML = renderPublicView() },
   }
-  if (!user) return app.innerHTML = renderPublicView()
+  if (publicRoutes[route]) return publicRoutes[route]()
+  if (!user) return publicRoutes.home()
   await renderPrivateRoute(route, user)
 }
 
@@ -134,7 +115,7 @@ async function renderRoute() {
   if (isBootstrapping) return
   isBootstrapping = true
   app.innerHTML = '<main class="page"><section class="auth-panel session-loading" role="status" aria-live="polite"><span class="loader" aria-hidden="true"></span><p>Comprobando sesión...</p></section></main>'
-  const route = routeName()
+  const route = routeName(window.location.hash)
   const session = await currentSession(route)
   isBootstrapping = false
   if (session.error) return renderSessionError(session.error)

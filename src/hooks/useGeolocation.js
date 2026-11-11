@@ -1,58 +1,71 @@
-const LOCATION_ERRORS = {
-  1: 'Se denegó el permiso de ubicación. Habilítalo en los ajustes del navegador y vuelve a intentarlo.',
-  2: 'No se pudo determinar tu ubicación. Comprueba la señal GPS o la conexión e inténtalo otra vez.',
-  3: 'La ubicación tardó demasiado. Inténtalo de nuevo en un lugar con mejor señal.',
+const geolocationMessages = {
+  1: {
+    status: 'permission-denied',
+    message: 'Permite el acceso a tu ubicación en el navegador para registrar el ingreso.',
+  },
+  2: {
+    status: 'unavailable',
+    message: 'No se pudo determinar tu ubicación. Comprueba la señal y vuelve a intentarlo.',
+  },
+  3: {
+    status: 'unavailable',
+    message: 'La solicitud de ubicación tardó demasiado. Inténtalo nuevamente.',
+  },
+  default: {
+    status: 'unavailable',
+    message: 'No se pudo obtener la ubicación. Inténtalo nuevamente.',
+  },
 }
 
-const LOCATION_OPTIONS = { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
-
-function initialState() {
-  return { location: null, status: 'idle', error: '' }
+function normalizePosition(position) {
+  return {
+    latitud: position.coords.latitude,
+    longitud: position.coords.longitude,
+    precision: position.coords.accuracy,
+  }
 }
 
-function errorMessage(error) {
-  return LOCATION_ERRORS[error?.code] || 'No se pudo obtener la ubicación. Revisa los permisos e inténtalo de nuevo.'
-}
-
-function readCurrentPosition(geolocation) {
-  return new Promise((resolve, reject) => geolocation.getCurrentPosition(
-    ({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude, accuracy: coords.accuracy }),
-    reject,
-    LOCATION_OPTIONS,
-  ))
+function updateFailure(state, error) {
+  const failure = geolocationMessages[error?.code] || geolocationMessages.default
+  state.status = failure.status
+  state.error = failure.message
 }
 
 export function useGeolocation(geolocation = globalThis.navigator?.geolocation) {
-  let state = initialState()
-  let requestId = 0
+  const state = { status: 'idle', position: null, error: '' }
 
-  function getState() {
-    return { ...state }
-  }
-
-  function reset() {
-    requestId += 1
-    state = initialState()
-    return getState()
-  }
-
-  async function capture() {
-    if (state.status === 'loading') return getState()
+  function getCurrentPosition(options = {}) {
     if (!geolocation?.getCurrentPosition) {
-      state = { ...initialState(), status: 'error', error: 'Este navegador no ofrece geolocalización. Abre la aplicación en un navegador compatible.' }
-      return getState()
+      state.status = 'unsupported'
+      state.position = null
+      state.error = 'Este navegador no es compatible con la geolocalización.'
+      return Promise.resolve(null)
     }
 
-    const activeRequest = ++requestId
-    state = { ...initialState(), status: 'loading' }
-    try {
-      const location = await readCurrentPosition(geolocation)
-      if (activeRequest === requestId) state = { location, status: 'success', error: '' }
-    } catch (error) {
-      if (activeRequest === requestId) state = { ...initialState(), status: 'error', error: errorMessage(error) }
-    }
-    return getState()
+    state.status = 'loading'
+    state.position = null
+    state.error = ''
+
+    return new Promise((resolve) => {
+      try {
+        geolocation.getCurrentPosition(
+          (position) => {
+            state.status = 'ready'
+            state.position = normalizePosition(position)
+            resolve(state.position)
+          },
+          (error) => {
+            updateFailure(state, error)
+            resolve(null)
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0, ...options },
+        )
+      } catch (error) {
+        updateFailure(state, error)
+        resolve(null)
+      }
+    })
   }
 
-  return { capture, getState, reset }
+  return { state, getCurrentPosition }
 }

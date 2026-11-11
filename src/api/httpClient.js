@@ -1,5 +1,6 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api').replace(/\/$/, '')
-const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 10000)
+const apiEnvironment = import.meta.env || {}
+const API_BASE_URL = (apiEnvironment.VITE_API_BASE_URL || 'http://localhost:3000/api').replace(/\/$/, '')
+const REQUEST_TIMEOUT_MS = Number(apiEnvironment.VITE_API_TIMEOUT_MS || 10000)
 
 const statusMessages = {
   401: 'Tu sesión no es válida o ha expirado.',
