@@ -1,31 +1,44 @@
-## Información de la Issue
+# Reporte Metodológico: Frontend F08
 
-- ID y nombre: Frontend F07 — Asignar guardias y mostrar el dashboard operativo.
-- Repositorio/carpeta: west-security-frontend, front/v07-issue-F07.
-- Commit Git: HEAD consultado antes de editar: 7337ac0 (base, no atribuible a F07).
-- Commit sugerido: docs(front): documentar asignaciones y dashboard F07. Para publicar: git rev-parse --short HEAD y git push origin feature/frontend-issue-F07-dashboard-asignaciones.
+## Alcance
 
-## Registro Metodológico y Cambios Realizados
+- Issue: preparar servicios asignados y obtener geolocalización real para el guardia autenticado.
+- Proyecto: `front/v08-issue-F08/west-security-frontend`.
+- F08 ya contenía el snapshot de F07 más una primera implementación del flujo; se conservó y completó ese trabajo dentro de F08.
+- Aplicación existente: JavaScript ESM y Vite, sin framework de componentes. El hook encapsula estado en una fábrica reutilizable compatible con el ciclo de renderizado actual.
 
-F07 amplía F06 con asignación/desasignación de guardias en horarios y un resumen operativo. Servicios encapsulan API; hooks gestionan estado; vistas/componentes muestran asignaciones, actividad y alertas. El selector filtra por rol guardia. Tras mutaciones se actualiza la lista. Dashboard contempla carga, error con reintento y vacío. Comparación F06→F07: nuevos DashboardContent.js, GuardAssignmentsModal.js, adminAssignmentsController.js, adminDashboardController.js, adminAssignmentApi.js, adminDashboardApi.js, dashboardData.js y DashboardView.js; cambios en ScheduleList.js, adminServicesController.js, main.js y style.css; nuevo adminUsersController.js.
+## Arquitectura
 
-- Components: src/components/admin/DashboardContent.js, GuardAssignmentsModal.js; cambio en ScheduleList.js.
-- Views: src/views/admin/DashboardView.js; integración src/main.js.
-- Services/API: src/services/adminAssignmentApi.js, adminDashboardApi.js.
-- Hooks: src/hooks/adminAssignmentsController.js, adminDashboardController.js, adminUsersController.js; cambio en adminServicesController.js.
-- Utils: src/utils/dashboardData.js.
-- Estilos: src/style.css.
-- Pruebas: package.json no declara script de test.
+- Componentes: `src/components/guard/ServiceScheduleSelector.js` y `LocationCapture.js` renderizan selectores y estados de ubicación.
+- Vista: `src/views/guard/AssignedServicesView.js` compone el flujo sin llamadas HTTP.
+- Servicios: `src/services/misServicios.js` consume servicios asignados y horarios mediante el `httpClient` compartido.
+- Hooks: `src/hooks/useGeolocation.js` encapsula captura, estados, errores y prevención de solicitudes simultáneas; `guardServicesController.js` coordina la vista y las consultas.
+- Utilidades y API: `src/utils/html.js` escapa texto de usuario; `src/api/httpClient.js` concentra `fetch`, credenciales de sesión y errores.
+- Pruebas: `tests/misServicios.test.jsx`, `tests/useGeolocation.test.jsx` y `tests/guardViews.test.jsx`.
 
-## Verificación de Criterios de Aceptación
+## Implementación
 
-- [x] Candidatos de asignación filtrados a guardias.
-- [x] Asignación/desasignación integra API y actualiza el estado.
-- [x] Errores pasan al estado de UI.
-- [x] Dashboard contempla carga, error/reintento, vacío, actividad y alertas.
-- [ ] No se documentó prueba manual de navegador ni se ejecutaron pruebas en esta actualización.
-- [ ] No se verificó contra API activa; depende de endpoints backend compatibles.
+`listMisServicios()` llama `GET /mis-servicios` sin enviar un identificador de guardia; la sesión autenticada determina las asignaciones. `listHorariosServicio()` consulta horarios del servicio seleccionado y codifica el nombre en la ruta. Los estados de carga, error, horarios vacíos y ausencia de asignaciones se presentan en la vista. Las vistas y componentes no usan `fetch` ni `axios`.
 
-## Evidencia de Funcionamiento y Pruebas
+`useGeolocation()` captura latitud, longitud y precisión con `navigator.geolocation.getCurrentPosition`, alta precisión, sin valores simulados. Expone espera, éxito y error; contempla permiso denegado con instrucciones, posición no disponible, timeout y navegador incompatible. Evita capturas concurrentes y descarta resultados tardíos después de reset. El control de captura se deshabilita durante la solicitud y continuar requiere horario y ubicación.
 
-Flujos visibles en código: cargar guardias por horario, asignar/quitar y refrescar; cargar dashboard y presentar actividad, alertas, vacío o error con reintento. Integración mediante adminAssignmentApi.js y adminDashboardApi.js a través de hooks. package.json ofrece npm run build; no ejecutado aquí. No se registran payloads ni códigos HTTP observados en ejecución.
+`.env` y `coverage/` se excluyen mediante `.gitignore`; no se añaden secretos al código fuente.
+
+## Verificación
+
+- [x] La consulta de servicios asignados utiliza el cliente HTTP común y preserva la sesión autenticada.
+- [x] El servicio seleccionado determina los horarios; se cubren estados de carga, error y ausencia de resultados.
+- [x] Latitud, longitud y precisión se obtienen del navegador; no se simulan coordenadas.
+- [x] Denegación de permisos muestra instrucciones y permite reintentar; el navegador incompatible muestra un mensaje explícito.
+- [x] La captura bloquea solicitudes simultáneas y el botón se deshabilita durante la espera.
+- [x] Sin HTTP en `views/` o `components/`; sin `console.log`, `console.error` ni `debugger` en el código de aplicación.
+- [x] `npm audit`: 0 vulnerabilidades.
+- [x] `npm run test:coverage`: 3 archivos de prueba, 16 tests aprobados.
+- [x] `npm run build`: build de producción completado.
+
+## Cobertura
+
+Vitest usa el proveedor V8 e incluye el servicio, hook, selector, vista y componente de captura. El resumen registra 100% en líneas, sentencias y funciones, y 92,77% en ramas, superando el umbral mínimo de 80%.
+
+Comandos: `npm test`, `npm run test:coverage`, `npm run build`.
+Artefacto: `coverage/coverage-summary.json`.
