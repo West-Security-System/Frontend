@@ -1,3 +1,5 @@
+import { escapeHtml } from '../utils/serviceValidation.js'
+
 const navigationByRole = {
   admin: [
     { href: '#/admin', label: 'Resumen', key: 'admin' },
@@ -8,6 +10,7 @@ const navigationByRole = {
     { href: '#/guardia', label: 'Mi actividad', key: 'guardia' },
     { href: '#/guardia/horarios', label: 'Mis horarios', key: 'horarios' },
     { href: '#/guardia/egreso', label: 'Registrar egreso', key: 'egreso' },
+    { href: '#/guardia/historial', label: 'Historial', key: 'historial' },
   ],
 }
 
@@ -19,7 +22,7 @@ export function renderLayout({ user, activeSection, content }) {
       <header class="app-header">
         <a class="brand" href="#/${user.rol}">WEST SECURITY</a>
         <div class="user-menu">
-          <div class="user-details"><span class="user-name">${user.username}</span><span class="user-role">${roleLabel}</span></div>
+          <div class="user-details"><span class="user-name">${escapeHtml(user.username)}</span><span class="user-role">${roleLabel}</span></div>
           <button class="button text" id="logout-button" type="button">Cerrar sesión</button>
         </div>
       </header>

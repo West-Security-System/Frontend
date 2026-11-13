@@ -1,3 +1,5 @@
+import { escapeHtml } from '../../utils/serviceValidation.js'
+
 function roleLabel(role) {
   return role === 'admin' ? 'Administrador' : 'Guardia'
 }
@@ -11,13 +13,13 @@ export function renderUsersView({ users = [], currentUser }) {
     const isCurrentUser = Number(user.id) === Number(currentUser.id)
     return `
       <tr>
-        <th scope="row">${user.username}</th>
-        <td><span class="role-badge ${user.rol}">${roleLabel(user.rol)}</span></td>
+        <th scope="row">${escapeHtml(user.username)}</th>
+        <td><span class="role-badge ${escapeHtml(user.rol)}">${roleLabel(user.rol)}</span></td>
         <td><span class="tag ${user.bloqueado ? 'warning' : 'success'}"><span aria-hidden="true">●</span> ${statusLabel(user)}</span></td>
         <td class="row-actions">
-          <button class="button text" type="button" data-edit-user="${user.id}">Editar</button>
-          ${user.rol === 'guardia' ? `<button class="button text" type="button" data-block-user="${user.id}">Bloqueos</button>` : ''}
-          <button class="button text danger-text" type="button" data-delete-user="${user.id}" ${isCurrentUser ? 'disabled title="No puedes eliminar tu propia cuenta"' : ''}>${isCurrentUser ? 'Cuenta actual' : 'Eliminar'}</button>
+          <button class="button text" type="button" data-edit-user="${escapeHtml(user.id)}">Editar</button>
+          ${user.rol === 'guardia' ? `<button class="button text" type="button" data-block-user="${escapeHtml(user.id)}">Bloqueos</button>` : ''}
+          <button class="button text danger-text" type="button" data-delete-user="${escapeHtml(user.id)}" ${isCurrentUser ? 'disabled title="No puedes eliminar tu propia cuenta"' : ''}>${isCurrentUser ? 'Cuenta actual' : 'Eliminar'}</button>
         </td>
       </tr>
     `

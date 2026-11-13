@@ -1,4 +1,3 @@
-import './style.css'
 import { ApiError } from './api/httpClient.js'
 import { isUnauthorized, loadSession, login, logout } from './auth/session.js'
 import { mountAdminDashboard } from './hooks/adminDashboardController.js'
@@ -10,6 +9,7 @@ import { renderProtectedView } from './views/protected/ProtectedView.js'
 import { activeSection, roleRoute, routeCorrection, routeName } from './utils/routes.js'
 import { mountGuardSchedules } from './hooks/guardScheduleController.js'
 import { mountGuardExit } from './hooks/guardExitController.js'
+import { mountGuardHistory } from './hooks/guardHistoryController.js'
 
 const app = document.querySelector('#app')
 let isBootstrapping = false
@@ -90,6 +90,7 @@ async function renderPrivateRoute(route, user) {
     guardia: () => mountGuardSchedules(app, user),
     'guardia/horarios': () => mountGuardSchedules(app, user),
     'guardia/egreso': () => mountGuardExit(app, user),
+    'guardia/historial': () => mountGuardHistory(app, user),
   }
   const mountView = privateRoutes[route]
   if (mountView) {
