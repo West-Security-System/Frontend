@@ -43,3 +43,18 @@ El cliente recoge y envía `observaciones` junto con las coordenadas. El backend
 - [x] Suite automatizada activa y artefacto de cobertura generado.
 
 El build, las pruebas y las métricas indicadas se verificaron localmente. La certificación de Calidad 100/100 o de complejidad por una herramienta externa no está disponible en este entorno y no se declara como resultado certificado.
+
+## Issue 10 — Historial y avisos del guardia
+
+- Se incorporó `#/guardia/historial` a la navegación privada, manteniendo las rutas anteriores.
+- La vista presenta filtros de fecha y estado, una tabla de servicios y marcas, estados de carga, error y vacío, y un panel de avisos con contador de pendientes y acción para marcarlos como leídos.
+- El acceso HTTP queda en `services/guardActivityApi.js`; el controlador aplica los filtros y descarta filas/notificaciones cuyo `usuario_id` o `user_id` corresponda a otra cuenta.
+- Los servicios llaman a `GET /api/mis-registros`, `GET /api/notificaciones` y `POST /api/notificaciones/leidas`. El backend B17 disponible en el workspace no define estos endpoints; su implementación debe acompañar el despliegue para que esta funcionalidad opere contra ese backend.
+- Se amplió la suite con pruebas de cliente HTTP, servicios, controladores, vistas, componentes y navegación usando Happy DOM.
+
+## Verificación acumulada de F09
+
+- [x] `npm run test:coverage`: 65 pruebas aprobadas.
+- [x] Cobertura global sobre `src/**/*.js`: **98,88% de líneas/sentencias**, **97,29% de funciones** y **90,09% de ramas**.
+- [x] `npm run build` validado tras mover la carga de CSS al HTML, lo que permite importar y probar el punto de entrada en Node.js sin cambiar el comportamiento de Vite.
+- [x] Se mantuvo la autenticación por cookie de sesión existente; no se introdujo JWT ni credenciales de prueba en el código de aplicación.

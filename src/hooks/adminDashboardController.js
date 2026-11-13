@@ -4,7 +4,8 @@ import { loadOperationalDashboard } from '../services/adminDashboardApi.js'
 
 function draw(app, state) {
   app.innerHTML = renderDashboardView(state)
-  app.querySelector('#refresh-dashboard, #refresh-dashboard-error')?.addEventListener('click', () => refreshDashboard(app, state))
+  app.querySelectorAll('#refresh-dashboard, #refresh-dashboard-error')
+    .forEach((button) => button.addEventListener('click', () => refreshDashboard(app, state)))
 }
 
 async function refreshDashboard(app, state) {
