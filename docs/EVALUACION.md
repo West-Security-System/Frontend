@@ -3,7 +3,7 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-14.
+> Generado: 2026-11-16.
 
 ## 1. Veredicto
 
@@ -11,12 +11,12 @@
 |---|---|
 | Tipo de proyecto | frontend |
 | Índice de calidad de servicios | **100/100** (mínimo 50) |
-| Criterios cumplidos | **14/15** |
-| Aprobado (semáforo) | **NO** |
+| Criterios cumplidos | **15/15** |
+| Aprobado (semáforo) | **SI** |
 | Código (LOC) | 1,849 |
 | Archivos de código | 46 |
 | Tests (archivos) | 18 |
-| Cobertura de líneas | 40.6% (mínimo 80%) |
+| Cobertura de líneas | 98.9% (mínimo 80%) |
 | Capas detectadas | vistas, servicios, estado |
 | Pushes directos a `main` (sin PR) | 0 |
 
@@ -36,7 +36,7 @@
 
 | Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
 |---|--:|--:|--:|--:|--:|--|--|
-| gonza-carelli | 12 | 46% | 14 d | 100% | **44** | No aprueba | Cumplimiento 46% (mín. 50%) |
+| gonza-carelli | 13 | 48% | 14 d | 93% | **44** | No aprueba | Cumplimiento 48% (mín. 50%) |
 
 > Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
 
@@ -122,15 +122,11 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 - **Por qué importa:** Piezas muy enlazadas hacen que un cambio se propague y que sea difícil reemplazar partes.
 - **Tu resultado:** **0** unidad(es) con acoplamiento alto _(máximo 2 por 1000 LOC)_
 
-### 14. Cobertura de tests (Cob) — A REVISAR
+### 14. Cobertura de tests (Cob) — OK
 
 - **Qué mide:** Porcentaje de líneas de código ejecutadas por la suite de tests (cobertura real, no cantidad de archivos de test).
 - **Por qué importa:** Un test que existe pero no ejecuta el código no protege de nada: la cobertura muestra qué partes quedan sin verificar.
-- **Tu resultado:** **40.6%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json _(mínimo 80% de líneas)_
-- **Para investigar la causa:**
-    - ¿Qué módulos o ramas del sistema nunca se ejecutan en los tests?
-    - ¿Los tests prueban el camino principal y los errores, o solo el caso feliz?
-    - ¿La suite se puede correr en CI sin base de datos ni servicios externos?
+- **Tu resultado:** **98.9%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json _(mínimo 80% de líneas)_
 
 ### 15. Vistas del frontend (Vistas) — OK
 
@@ -140,13 +136,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 ## 5. Observaciones y qué falta
 
-Criterios que hoy están en rojo y, para cada uno, una explicación breve de **cómo corregirlo** hasta alcanzar el nivel de aprobación (perfil `exigente`):
-
-| Criterio | Resultado actual | Meta | Brecha | Cómo alcanzarlo |
-|---|---|---|---|---|
-| Cobertura de tests (Cob) | **40.6%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json | mínimo 80% de líneas | faltan 39.4 pts | Agregá o ampliá tests que ejecuten los módulos sin cubrir (camino principal y errores) y publicá el artefacto (`coverage/lcov.info`, `coverage-summary.json`, `coverage.xml` o `coverage.json`) o corré la suite con coverage. Meta: ≥80% de líneas. |
-
-> Empezá por las señales de seguridad (**SEC**, **SQL**) y por la **duplicación**: son las que más pesan en el índice y las más rápidas de verificar a ojo. Después de corregir, volvé a correr la medición: el semáforo se recalcula sobre `main`.
+_Cumple **todos** los criterios del semáforo: no hay nada que arreglar para aprobar. El siguiente objetivo es sostenerlo y mejorar duplicación y diseño._
 
 ## 6. Actividad en clase y fuera de clase
 
@@ -186,11 +176,15 @@ Criterios que hoy están en rojo y, para cada uno, una explicación breve de **c
 | 2026-11-11 | **Sí** | Backend, Frontend | 4 / 7 |
 | 2026-11-13 | **Sí** | Frontend | 1 / 1 |
 
-**Fuera de clase:** sin actividad registrada.
+**Fuera de clase:** 1 fecha(s) con actividad · 1 commits · 1 merges
+
+| Fecha | Repositorios | Commits / merges |
+|---|---|--:|
+| 2026-11-15 | Frontend | 1 / 1 |
 
 ## 7. Anexo: dónde mirar
 
-Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
+_No hay criterios en rojo con archivos asociados._
 
 ---
 _Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo señalado y el criterio en `CRITERIOS-CALIDAD.md`._
