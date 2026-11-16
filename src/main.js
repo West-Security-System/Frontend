@@ -3,6 +3,7 @@ import { isUnauthorized, loadSession, login, logout } from './auth/session.js'
 import { mountAdminDashboard } from './hooks/adminDashboardController.js'
 import { mountAdminServices } from './hooks/adminServicesController.js'
 import { mountAdminUsers } from './hooks/adminUsersController.js'
+import { mountAdminOperationalRecords } from './hooks/adminOperationalRecordsController.js'
 import { renderLoginView } from './views/public/LoginView.js'
 import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
@@ -87,6 +88,7 @@ async function renderPrivateRoute(route, user) {
     admin: () => mountAdminDashboard(app, user),
     'admin/usuarios': () => mountAdminUsers(app, user),
     'admin/locales': () => mountAdminServices(app, user),
+    'admin/registros': () => mountAdminOperationalRecords(app, user),
     guardia: () => mountGuardSchedules(app, user),
     'guardia/horarios': () => mountGuardSchedules(app, user),
     'guardia/egreso': () => mountGuardExit(app, user),
