@@ -3,7 +3,7 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-16.
+> Generado: 2026-11-17.
 
 ## 1. Veredicto
 
@@ -13,9 +13,9 @@
 | Índice de calidad de servicios | **100/100** (mínimo 50) |
 | Criterios cumplidos | **15/15** |
 | Aprobado (semáforo) | **SI** |
-| Código (LOC) | 1,849 |
-| Archivos de código | 46 |
-| Tests (archivos) | 18 |
+| Código (LOC) | 2,212 |
+| Archivos de código | 53 |
+| Tests (archivos) | 19 |
 | Cobertura de líneas | 98.9% (mínimo 80%) |
 | Capas detectadas | vistas, servicios, estado |
 | Pushes directos a `main` (sin PR) | 0 |
@@ -26,7 +26,7 @@
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| gonza-carelli | 12 | 2,305 | 1,480 | 60 | 10 | 100% |
+| gonza-carelli | 13 | 2,734 | 1,791 | 60 | 12 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -54,7 +54,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Porcentaje de bloques de código repetidos (similitud) en el repositorio.
 - **Por qué importa:** Cada copia se mantiene por separado: un arreglo hay que repetirlo y los defectos se multiplican.
-- **Tu resultado:** **1.1%** de duplicación _(máximo 15%)_
+- **Tu resultado:** **0.9%** de duplicación _(máximo 15%)_
 
 ### 3. Secretos hardcodeados (SEC) — OK
 
@@ -108,7 +108,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **5** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 1849 LOC))_
+- **Tu resultado:** **9** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 2212 LOC))_
 
 ### 12. Funciones/métodos largos o con muchos parámetros (Tam) — OK
 
@@ -132,7 +132,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Cantidad de vistas/componentes de pantalla del frontend.
 - **Por qué importa:** El frontend se mide por pantallas: pocas vistas sugiere poca cobertura de la interfaz pedida.
-- **Tu resultado:** **18** vista(s)/componente(s) _(mínimo 6)_
+- **Tu resultado:** **21** vista(s)/componente(s) _(mínimo 6)_
 
 ## 5. Observaciones y qué falta
 
@@ -176,11 +176,12 @@ _Cumple **todos** los criterios del semáforo: no hay nada que arreglar para apr
 | 2026-11-11 | **Sí** | Backend, Frontend | 4 / 7 |
 | 2026-11-13 | **Sí** | Frontend | 1 / 1 |
 
-**Fuera de clase:** 1 fecha(s) con actividad · 1 commits · 1 merges
+**Fuera de clase:** 2 fecha(s) con actividad · 1 commits · 1 merges
 
 | Fecha | Repositorios | Commits / merges |
 |---|---|--:|
-| 2026-11-15 | Frontend | 1 / 1 |
+| 2026-11-15 | Frontend | 1 / 0 |
+| 2026-11-16 | Frontend | 0 / 1 |
 
 ## 7. Anexo: dónde mirar
 
