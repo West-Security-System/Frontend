@@ -46,6 +46,7 @@ function draw(app, state) {
   app.innerHTML = renderServicesView({ ...state, schedules: uniqueSchedules(state.schedules), selectedService: selectedService(state), error: state.feedback })
   const alert = app.querySelector('#services-alert')
   alert?.classList.toggle('success', state.feedbackTone === 'success')
+  alert?.setAttribute('role', state.feedbackTone === 'error' ? 'alert' : 'status')
 }
 
 async function refreshAndDraw(app, state) {

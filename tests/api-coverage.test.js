@@ -52,6 +52,24 @@ test('HTTP client maps JSON and plain-text failures to ApiError', async (context
   await assert.rejects(request('/plain'), /plain failure/)
 })
 
+test('HTTP client redirects protected 401s and explains the login rate limit', async (context) => {
+  const previousWindow = globalThis.window
+  globalThis.window = { location: { hash: '#/admin' } }
+  context.mock.method(globalThis, 'fetch', async () => response({ error: { code: 'UNAUTHENTICATED', message: 'Expired' } }, { status: 401 }))
+  await assert.rejects(request('/me'), (error) => error.status === 401)
+  assert.equal(globalThis.window.location.hash, '#/login')
+  globalThis.window.location.hash = '#/login'
+  await assert.rejects(httpClient.post('/login', { username: 'admin', password: 'bad' }), (error) => error.status === 401)
+  assert.equal(globalThis.window.location.hash, '#/login')
+  context.mock.restoreAll()
+  context.mock.method(globalThis, 'fetch', async () => response({ error: { code: 'LOGIN_RATE_LIMITED' } }, { status: 429 }))
+  await assert.rejects(request('/login'), (error) => (
+    error.status === 429 && error.message === 'Demasiados intentos, esperá unos minutos.'
+  ))
+  if (previousWindow === undefined) delete globalThis.window
+  else globalThis.window = previousWindow
+})
+
 test('HTTP client exposes timeout and network errors without swallowing API errors', async (context) => {
   context.mock.method(globalThis, 'fetch', async () => {
     const error = new Error('aborted')
