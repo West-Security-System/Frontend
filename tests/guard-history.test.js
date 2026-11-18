@@ -9,7 +9,7 @@ import { installBrowser, createApp, submitForm, settle } from './helpers/browser
 
 const user = { id: 4, rol: 'guardia', username: 'Guardia Uno' }
 
-test('activity API builds optional history filters and loads private notifications', async (context) => {
+test('activity API requests only supported history pagination and private notification endpoints', async (context) => {
   const paths = []
   context.mock.method(httpClient, 'get', async (path) => {
     paths.push(path)
@@ -23,7 +23,7 @@ test('activity API builds optional history filters and loads private notificatio
   assert.deepEqual(await guardActivityApi.listNotifications(), [{ id: 2 }])
   assert.deepEqual(await guardActivityApi.markNotificationsRead(), ['/notificaciones/leidas', {}])
   assert.equal(paths[0], '/mis-registros')
-  assert.equal(paths[1], '/mis-registros?desde=2026-01-01&hasta=2026-01-31&estado=cerrado')
+  assert.equal(paths[1], '/mis-registros')
 })
 
 test('activity helpers scope records and filter dates and status', () => {
@@ -42,8 +42,8 @@ test('history view renders filters, record states, empty and error states, and u
   const html = renderGuardHistoryView({
     user,
     filters: { desde: '2026-05-01', estado: 'abierto' },
-    records: [{ servicio: '<Central>', hora_ingreso: '2026-05-01T08:00:00Z' }],
-    notifications: [{ mensaje: '<Aviso>', leido: false }],
+    records: [{ local_nombre: '<Central>', hora_ingreso: '2026-05-01T08:00:00Z' }],
+    notifications: [{ mensaje: '<Aviso>', leida: false }],
   })
   assert.match(html, /activity-filters/)
   assert.match(html, /&lt;Central&gt;/)
@@ -67,8 +67,8 @@ test('history controller loads owned rows, filters them, and marks notifications
     ]
   })
   context.mock.method(guardActivityApi, 'listNotifications', async () => [
-    { id: 1, usuario_id: 4, mensaje: 'Turno confirmado', leido: false },
-    { id: 2, usuario_id: 9, mensaje: 'Aviso ajeno', leido: false },
+    { id: 1, usuario_id: 4, mensaje: 'Turno confirmado', leida: false },
+    { id: 2, usuario_id: 9, mensaje: 'Aviso ajeno', leida: false },
   ])
   context.mock.method(guardActivityApi, 'markNotificationsRead', async () => {})
 
@@ -109,7 +109,7 @@ test('history controller reports mark-read failures', async (context) => {
   const browser = installBrowser(context)
   const app = createApp(browser)
   context.mock.method(guardActivityApi, 'listRecords', async () => [])
-  context.mock.method(guardActivityApi, 'listNotifications', async () => [{ id: 3, mensaje: 'Aviso', leido: false }])
+  context.mock.method(guardActivityApi, 'listNotifications', async () => [{ id: 3, mensaje: 'Aviso', leida: false }])
   context.mock.method(guardActivityApi, 'markNotificationsRead', async () => { throw new Error('HTTP 403') })
   await mountGuardHistory(app, user)
   app.querySelector('#mark-notifications-read').click()

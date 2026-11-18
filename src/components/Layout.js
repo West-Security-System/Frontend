@@ -6,6 +6,7 @@ const navigationByRole = {
     { href: '#/admin/usuarios', label: 'Usuarios', key: 'usuarios' },
     { href: '#/admin/locales', label: 'Locales y servicios', key: 'locales' },
     { href: '#/admin/calendario', label: 'Calendario y valores', key: 'calendario' },
+    { href: '#/admin/registros', label: 'Registros', key: 'registros' },
   ],
   guardia: [
     { href: '#/guardia', label: 'Mi actividad', key: 'guardia' },

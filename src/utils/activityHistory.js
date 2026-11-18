@@ -26,7 +26,7 @@ export function activityStatus(record) {
 }
 
 export function renderActivityRow(record) {
-  const service = record.servicio || record.local || record.nombre_servicio || 'Servicio'
+  const service = record.servicio || record.local || record.local_nombre || record.nombre_servicio || 'Servicio'
   const entry = record.hora_ingreso || record.fecha
   const exit = record.hora_egreso
   const status = activityStatus(record)
