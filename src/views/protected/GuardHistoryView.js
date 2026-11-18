@@ -15,7 +15,7 @@ function renderRecords(records, loading, error) {
 
 function renderNotifications(notifications) {
   if (!notifications.length) return '<p role="status">No tienes avisos.</p>'
-  return `<ul class="activity-notifications">${notifications.map((item) => `<li class="${item.leido ? 'read' : 'unread'}"><span>${escapeHtml(item.mensaje || item.titulo || 'Aviso')}</span><span>${item.leido ? 'Leído' : 'No leído'}</span></li>`).join('')}</ul>`
+  return `<ul class="activity-notifications">${notifications.map((item) => `<li class="${item.leida ? 'read' : 'unread'}"><span>${escapeHtml(item.mensaje || item.titulo || 'Aviso')}</span><span>${item.leida ? 'Leído' : 'No leído'}</span></li>`).join('')}</ul>`
 }
 
 export function renderGuardHistoryView({
@@ -26,7 +26,7 @@ export function renderGuardHistoryView({
   loading = false,
   error = '',
 }) {
-  const unreadCount = notifications.filter((item) => !item.leido).length
+  const unreadCount = notifications.filter((item) => !item.leida).length
   const content = `<section class="dashboard guard-history-page" aria-labelledby="history-title"><div class="section-heading"><div><span class="eyebrow">Operaciones de guardia</span><h1 id="history-title">Mi historial.</h1><p>Consulta tus servicios, marcas de ingreso y egreso y avisos.</p></div></div><section class="surface" aria-labelledby="records-title"><div class="surface-heading"><h2 id="records-title">Servicios y marcas</h2></div>${renderFilters(filters)}${renderRecords(records, loading, error)}</section><section class="surface" aria-labelledby="notifications-title"><div class="surface-heading"><h2 id="notifications-title">Avisos</h2><span class="record-count" aria-label="${unreadCount} avisos sin leer">${unreadCount}</span><button class="button" id="mark-notifications-read" type="button" ${unreadCount ? '' : 'disabled'}>Marcar leídos</button></div>${renderNotifications(notifications)}</section></section>`
   return renderLayout({ user, activeSection: 'historial', content })
 }

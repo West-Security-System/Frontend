@@ -4,6 +4,7 @@ import { mountAdminDashboard } from './hooks/adminDashboardController.js'
 import { mountAdminCalendar } from './hooks/adminCalendarController.js'
 import { mountAdminServices } from './hooks/adminServicesController.js'
 import { mountAdminUsers } from './hooks/adminUsersController.js'
+import { mountAdminRecords } from './hooks/adminRecordsController.js'
 import { renderLoginView } from './views/public/LoginView.js'
 import { renderPublicView } from './views/public/PublicView.js'
 import { renderProtectedView } from './views/protected/ProtectedView.js'
@@ -89,6 +90,7 @@ async function renderPrivateRoute(route, user) {
     'admin/usuarios': () => mountAdminUsers(app, user),
     'admin/locales': () => mountAdminServices(app, user),
     'admin/calendario': () => mountAdminCalendar(app, user),
+    'admin/registros': () => mountAdminRecords(app, user),
     guardia: () => mountGuardSchedules(app, user),
     'guardia/horarios': () => mountGuardSchedules(app, user),
     'guardia/egreso': () => mountGuardExit(app, user),

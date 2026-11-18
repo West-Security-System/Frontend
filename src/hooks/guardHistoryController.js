@@ -52,7 +52,7 @@ async function submitFilters(event, app, state) {
 async function markRead(app, state) {
   try {
     await guardActivityApi.markNotificationsRead()
-    state.notifications = state.notifications.map((item) => ({ ...item, leido: true }))
+    state.notifications = state.notifications.map((item) => ({ ...item, leida: true }))
     state.error = ''
   } catch (error) {
     state.error = error.message || 'No se pudieron marcar los avisos como leídos.'

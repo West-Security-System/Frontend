@@ -4,8 +4,10 @@ import { guardScheduleApi } from '../src/services/guardScheduleApi.js'
 import {
   createEntryPayload,
   createGuardScheduleState,
+  mountGuardSchedules,
   refreshGuardSchedules,
 } from '../src/hooks/guardScheduleController.js'
+import { installBrowser, createApp, settle } from './helpers/browser.js'
 
 test('guard schedule controller loads assigned services and the first matching schedule', async (context) => {
   context.mock.method(guardScheduleApi, 'listAssignedServices', async () => [
@@ -58,4 +60,29 @@ test('guard schedule controller prepares the registered service, schedule and co
 
   state.location.state.position = null
   assert.throws(() => createEntryPayload(state), /captura tu ubicación/)
+})
+
+test('guard entry reports backend radius denial and duplicate-entry conflict accessibly', async (context) => {
+  const browser = installBrowser(context)
+  const app = createApp(browser)
+  Object.defineProperty(browser.navigator, 'geolocation', {
+    configurable: true,
+    value: { getCurrentPosition(success) { success({ coords: { latitude: -32.9, longitude: -68.8, accuracy: 5 } }) } },
+  })
+  context.mock.method(guardScheduleApi, 'listAssignedServices', async () => [{ id: 3, nombre: 'Central' }])
+  context.mock.method(guardScheduleApi, 'listSchedules', async () => [{ id: 12, hora_inicio: '08:00', hora_fin: '16:00' }])
+  let failure = Object.assign(new Error('Fuera del radio de 100 metros'), { status: 403 })
+  context.mock.method(guardScheduleApi, 'registerEntry', async () => { throw failure })
+  await mountGuardSchedules(app, { id: 5, rol: 'guardia' })
+  app.querySelector('[data-capture-location]').click()
+  await settle(browser)
+  app.querySelector('#guard-checkin-form').dispatchEvent(new browser.Event('submit', { bubbles: true, cancelable: true }))
+  await settle(browser)
+  assert.match(app.querySelector('[role="alert"]').textContent, /100 metros/)
+  failure = Object.assign(new Error('Ya existe un ingreso activo'), { status: 409 })
+  app.querySelector('[data-capture-location]').click()
+  await settle(browser)
+  app.querySelector('#guard-checkin-form').dispatchEvent(new browser.Event('submit', { bubbles: true, cancelable: true }))
+  await settle(browser)
+  assert.match(app.querySelector('[role="alert"]').textContent, /ingreso activo/)
 })
