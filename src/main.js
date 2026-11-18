@@ -12,8 +12,10 @@ import { activeSection, roleRoute, routeCorrection, routeName } from './utils/ro
 import { mountGuardSchedules } from './hooks/guardScheduleController.js'
 import { mountGuardExit } from './hooks/guardExitController.js'
 import { mountGuardHistory } from './hooks/guardHistoryController.js'
+import { initializeThemeToggle } from './components/ThemeToggle.js'
 
 const app = document.querySelector('#app')
+initializeThemeToggle()
 let isBootstrapping = false
 let loginError = ''
 

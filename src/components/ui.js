@@ -1,5 +1,5 @@
-export function button(label, { variant = 'secondary', type = 'button' } = {}) {
-  return `<button class="button ${variant}" type="${type}">${label}</button>`
+export function button(label, { variant = 'secondary', type = 'button', loading = false } = {}) {
+  return `<button class="button ${variant}${loading ? ' is-loading' : ''}" type="${type}" ${loading ? 'disabled' : ''}>${label}</button>`
 }
 
 export function formField(id, label, placeholder, type = 'text') {

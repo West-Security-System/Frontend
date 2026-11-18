@@ -1,4 +1,5 @@
 import { escapeHtml } from '../utils/serviceValidation.js'
+import { renderThemeToggle } from './ThemeToggle.js'
 
 const navigationByRole = {
   admin: [
@@ -24,6 +25,7 @@ export function renderLayout({ user, activeSection, content }) {
       <header class="app-header">
         <a class="brand" href="#/${user.rol}">WEST SECURITY</a>
         <div class="user-menu">
+          ${renderThemeToggle()}
           <div class="user-details"><span class="user-name">${escapeHtml(user.username)}</span><span class="user-role">${roleLabel}</span></div>
           <button class="button text" id="logout-button" type="button">Cerrar sesión</button>
         </div>

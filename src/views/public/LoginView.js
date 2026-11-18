@@ -1,11 +1,12 @@
 import { alert, button, formField } from '../../components/ui.js'
+import { renderThemeToggle } from '../../components/ThemeToggle.js'
 
 export function renderLoginView({ errorMessage = '', isSubmitting = false } = {}) {
   return `
     <main class="page auth-page">
       <header class="masthead">
         <a class="brand" href="#/login">WEST SECURITY</a>
-        <span class="eyebrow">Inicio de sesión</span>
+        <div class="header-actions">${renderThemeToggle()}<span class="eyebrow">Inicio de sesión</span></div>
       </header>
       <section class="auth-panel" aria-labelledby="login-title">
         <span class="eyebrow">Acceso privado</span>
@@ -16,7 +17,7 @@ export function renderLoginView({ errorMessage = '', isSubmitting = false } = {}
           ${formField('username', 'Usuario', 'Tu nombre de usuario')}
           ${formField('password', 'Contraseña', 'Tu contraseña', 'password')}
           <p id="login-form-error" class="form-error" role="alert" aria-live="polite"></p>
-          ${button(isSubmitting ? 'Comprobando acceso...' : 'Iniciar sesión', { variant: 'primary', type: 'submit' })}
+          ${button(isSubmitting ? 'Comprobando acceso...' : 'Iniciar sesión', { variant: 'primary', type: 'submit', loading: isSubmitting })}
         </form>
       </section>
     </main>

@@ -32,7 +32,7 @@ export function renderShiftExitForm({ locationState, feedback, observations, sub
         </div>
         ${renderLocation(locationState)}
         <div class="form-actions">
-          <button class="button primary" type="submit" data-confirm-exit ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
+          <button class="button primary${submitting || locationState.status === 'loading' ? ' is-loading' : ''}" type="submit" data-confirm-exit ${disabled ? 'disabled' : ''}>${buttonLabel}</button>
         </div>
       </form>
     </section>
