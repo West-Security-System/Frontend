@@ -1,17 +1,8 @@
 import { httpClient } from '../api/httpClient.js'
 
-function historyPath(filters = {}) {
-  const query = new URLSearchParams()
-  if (filters.desde) query.set('desde', filters.desde)
-  if (filters.hasta) query.set('hasta', filters.hasta)
-  if (filters.estado) query.set('estado', filters.estado)
-  const suffix = query.toString()
-  return `/mis-registros${suffix ? `?${suffix}` : ''}`
-}
-
 export const guardActivityApi = {
-  async listRecords(filters) {
-    const result = await httpClient.get(historyPath(filters))
+  async listRecords() {
+    const result = await httpClient.get('/mis-registros')
     return result?.registros || result?.marcas || []
   },
   async listNotifications() {

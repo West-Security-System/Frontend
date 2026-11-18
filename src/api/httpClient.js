@@ -1,5 +1,8 @@
 const apiEnvironment = import.meta.env || {}
-const API_BASE_URL = (apiEnvironment.VITE_API_URL || apiEnvironment.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+const configuredApiUrl = (apiEnvironment.VITE_API_URL || apiEnvironment.VITE_API_BASE_URL || '').replace(/\/$/, '')
+const API_BASE_URL = configuredApiUrl
+  ? (configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${configuredApiUrl}/api`)
+  : '/api'
 const REQUEST_TIMEOUT_MS = Number(apiEnvironment.VITE_API_TIMEOUT_MS || 10000)
 let unauthorizedHandler = () => {}
 
@@ -72,5 +75,6 @@ export const httpClient = {
   get: (path, options) => request(path, { ...options, method: 'GET' }),
   post: (path, body, options) => request(path, { ...options, method: 'POST', body: JSON.stringify(body) }),
   put: (path, body, options) => request(path, { ...options, method: 'PUT', body: JSON.stringify(body) }),
+  patch: (path, body, options) => request(path, { ...options, method: 'PATCH', body: JSON.stringify(body) }),
   delete: (path, options) => request(path, { ...options, method: 'DELETE' }),
 }

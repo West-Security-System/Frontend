@@ -69,8 +69,8 @@ export function renderGuardSchedulesView({
             <div class="field"><label for="guard-schedule">Horario</label><select id="guard-schedule" name="horario_id" data-schedule-select ${!hasSchedules || disableForm ? 'disabled' : ''}>${renderScheduleOptions(schedules, selectedScheduleId)}</select>${!hasSchedules && !loading ? '<p class="form-error">Este servicio no tiene horarios asignados.</p>' : ''}</div>
             ${renderLocationState(locationState)}
             <div class="form-actions">
-              <button class="button" type="button" data-capture-location ${isLocating || disableForm ? 'disabled' : ''}>${isLocating ? 'Obteniendo ubicación…' : 'Capturar ubicación'}</button>
-              <button class="button primary" type="submit" ${!hasSchedules || !locationState.position || disableForm ? 'disabled' : ''}>Registrar ingreso</button>
+              <button class="button${isLocating ? ' is-loading' : ''}" type="button" data-capture-location ${isLocating || disableForm ? 'disabled' : ''}>${isLocating ? 'Obteniendo ubicación…' : 'Capturar ubicación'}</button>
+              <button class="button primary${loading ? ' is-loading' : ''}" type="submit" ${!hasSchedules || !locationState.position || disableForm ? 'disabled' : ''}>Registrar ingreso</button>
             </div>
           </form>
         </section>

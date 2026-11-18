@@ -1,4 +1,5 @@
 import { escapeHtml } from '../utils/serviceValidation.js'
+import { renderThemeToggle } from './ThemeToggle.js'
 
 const navigationByRole = {
   admin: [
@@ -6,6 +7,7 @@ const navigationByRole = {
     { href: '#/admin/usuarios', label: 'Usuarios', key: 'usuarios' },
     { href: '#/admin/locales', label: 'Locales y servicios', key: 'locales' },
     { href: '#/admin/calendario', label: 'Calendario y valores', key: 'calendario' },
+    { href: '#/admin/registros', label: 'Registros', key: 'registros' },
   ],
   guardia: [
     { href: '#/guardia', label: 'Mi actividad', key: 'guardia' },
@@ -23,6 +25,7 @@ export function renderLayout({ user, activeSection, content }) {
       <header class="app-header">
         <a class="brand" href="#/${user.rol}">WEST SECURITY</a>
         <div class="user-menu">
+          ${renderThemeToggle()}
           <div class="user-details"><span class="user-name">${escapeHtml(user.username)}</span><span class="user-role">${roleLabel}</span></div>
           <button class="button text" id="logout-button" type="button">Cerrar sesión</button>
         </div>
