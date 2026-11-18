@@ -69,6 +69,7 @@ function showUsersAlert(app, message, tone = 'error') {
   const alert = app.querySelector('#users-alert')
   if (!alert) return
   alert.className = `users-alert ${tone}`
+  alert.setAttribute('role', tone === 'error' ? 'alert' : 'status')
   alert.textContent = message
 }
 

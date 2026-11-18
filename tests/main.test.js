@@ -18,7 +18,7 @@ test('main application handles login, protected history, role correction, logout
   let serverUser = null
   let failSession = false
   context.mock.method(globalThis, 'fetch', async (url, options = {}) => {
-    const path = new URL(url).pathname.replace('/api', '')
+    const path = new URL(url, browser.location.origin).pathname.replace('/api', '')
     if (path === '/me') {
       if (failSession) return jsonResponse({ error: { message: 'Servicio temporalmente no disponible' } }, 500)
       return serverUser
@@ -46,7 +46,7 @@ test('main application handles login, protected history, role correction, logout
 
   await import('../src/main.js')
   await settle(browser)
-  assert.match(app.textContent, /Claridad para proteger/)
+  assert.match(app.textContent, /Inicio de sesión/)
 
   browser.location.hash = '#/login'
   browser.dispatchEvent(new browser.HashChangeEvent('hashchange'))

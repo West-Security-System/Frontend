@@ -59,7 +59,7 @@ export function renderGuardSchedulesView({
       <div class="section-heading">
         <div><span class="eyebrow">Operaciones de guardia</span><h1 id="guard-schedules-title">Mis servicios.</h1><p>Consulta tus horarios asignados y registra el ingreso desde el servicio.</p></div>
       </div>
-      ${feedback ? `<p class="users-alert ${feedback.startsWith('Ingreso registrado') ? 'success' : 'error'}" role="status">${escapeHtml(feedback)}</p>` : ''}
+      ${feedback ? `<p class="users-alert ${feedback.startsWith('Ingreso registrado') ? 'success' : 'error'}" role="${feedback.startsWith('Ingreso registrado') ? 'status' : 'alert'}">${escapeHtml(feedback)}</p>` : ''}
       ${renderAssignmentState(services, loading)}
       ${hasAssignment ? `
         <section class="surface" aria-labelledby="checkin-title">

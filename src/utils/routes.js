@@ -2,7 +2,7 @@ const activeRoutes = {
   admin: [
     { prefix: 'admin/usuarios', section: 'usuarios' },
     { prefix: 'admin/locales', section: 'locales' },
-    { prefix: 'admin/registros', section: 'registros' },
+    { prefix: 'admin/calendario', section: 'calendario' },
   ],
   guardia: [
     { prefix: 'guardia/historial', section: 'historial' },

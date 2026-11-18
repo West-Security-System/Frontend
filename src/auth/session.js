@@ -1,6 +1,12 @@
-import { ApiError, httpClient } from '../api/httpClient.js'
+import { ApiError, httpClient, setUnauthorizedHandler } from '../api/httpClient.js'
 
 let currentUser = null
+
+setUnauthorizedHandler(() => {
+  currentUser = null
+  if (typeof window === 'undefined' || window.location.hash === '#/login') return
+  window.location.hash = '#/login'
+})
 
 export function getCurrentUser() {
   return currentUser

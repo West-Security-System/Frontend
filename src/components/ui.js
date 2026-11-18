@@ -15,7 +15,8 @@ export function modal(id, title, message) {
 }
 
 export function alert(message, tone = 'info') {
-  return `<div class="alert ${tone}" role="status"><span class="alert-icon" aria-hidden="true">${tone === 'success' ? '✓' : 'i'}</span><span>${message}</span></div>`
+  const role = tone === 'error' ? 'alert' : 'status'
+  return `<div class="alert ${tone}" role="${role}" aria-live="polite"><span class="alert-icon" aria-hidden="true">${tone === 'success' ? '✓' : 'i'}</span><span>${message}</span></div>`
 }
 
 export function loadingState(title, message) {

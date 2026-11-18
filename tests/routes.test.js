@@ -18,6 +18,7 @@ test('route utilities normalize hash routes and select the correct section', () 
   assert.equal(activeSection('guardia/horarios', guard), 'horarios')
   assert.equal(activeSection('guardia/egreso', guard), 'egreso')
   assert.equal(activeSection('admin/locales', admin), 'locales')
+   assert.equal(activeSection('admin/calendario', admin), 'calendario')
   assert.equal(activeSection('other', guard), 'guardia')
 })
 
