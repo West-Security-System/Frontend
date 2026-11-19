@@ -3,7 +3,7 @@
 
 > Documento **generado automáticamente** por la cátedra de Programación III (RepoSense + análisis de calidad + constancia). **No editar a mano**: se regenera en cada evaluación.
 > Rama evaluada: `main`. Análisis **heurístico** (regex + métricas): es una criba para orientar la revisión, **no una nota**.
-> Generado: 2026-11-13.
+> Generado: 2026-11-19.
 
 ## 1. Veredicto
 
@@ -11,12 +11,12 @@
 |---|---|
 | Tipo de proyecto | frontend |
 | Índice de calidad de servicios | **100/100** (mínimo 50) |
-| Criterios cumplidos | **14/15** |
-| Aprobado (semáforo) | **NO** |
-| Código (LOC) | 1,693 |
-| Archivos de código | 42 |
-| Tests (archivos) | 11 |
-| Cobertura de líneas | 40.6% (mínimo 80%) |
+| Criterios cumplidos | **15/15** |
+| Aprobado (semáforo) | **SI** |
+| Código (LOC) | 2,236 |
+| Archivos de código | 57 |
+| Tests (archivos) | 22 |
+| Cobertura de líneas | 98.9% (mínimo 80%) |
 | Capas detectadas | vistas, servicios, estado |
 | Pushes directos a `main` (sin PR) | 0 |
 
@@ -26,7 +26,7 @@
 
 | Autor | Commits | Código (LOC) | Tests (LOC) | Docs (LOC) | Días activos | % del código |
 |---|---:|---:|---:|---:|---:|---:|
-| gonza-carelli | 11 | 2,087 | 664 | 45 | 9 | 100% |
+| gonza-carelli | 16 | 2,924 | 1,729 | 159 | 13 | 100% |
 
 > _El LOC de autoría lo calcula RepoSense sobre el historial y puede diferir del LOC de código del análisis de calidad (que mira solo el estado de `main`)._
 
@@ -36,7 +36,7 @@
 
 | Alumno | Sesiones | Cumplimiento | Pausa | Recencia | IC | Nivel | Para subir de nivel |
 |---|--:|--:|--:|--:|--:|--|--|
-| gonza-carelli | 11 | 42% | 14 d | 86% | **39** | No aprueba | Cumplimiento 42% (mín. 50%) |
+| gonza-carelli | 14 | 50% | 14 d | 93% | **46** | Aprueba | Cumplimiento 50% (mín. 100%); Pausa 14 d (máx. 5 d) |
 
 > Para aprobar el IC: **2 sesiones por semana** sostenidas, sin pausas mayores a **10 días** y con actividad en las **últimas 2 semanas**. Se excluyen merges, bots y al docente. Zona horaria UTC-3.
 
@@ -54,7 +54,7 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Porcentaje de bloques de código repetidos (similitud) en el repositorio.
 - **Por qué importa:** Cada copia se mantiene por separado: un arreglo hay que repetirlo y los defectos se multiplican.
-- **Tu resultado:** **0.8%** de duplicación _(máximo 15%)_
+- **Tu resultado:** **0.9%** de duplicación _(máximo 15%)_
 
 ### 3. Secretos hardcodeados (SEC) — OK
 
@@ -108,13 +108,13 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 
 - **Qué mide:** Complejidad ciclomática: cantidad de caminos posibles dentro de una función (condicionales, bucles, casos).
 - **Por qué importa:** Muchos caminos = difícil de seguir y de probar; suelen esconderse casos sin cubrir.
-- **Tu resultado:** **5** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 1693 LOC))_
+- **Tu resultado:** **10** bloque(s) de complejidad alta _(máximo 5 por 1000 LOC (tenés 2236 LOC))_
 
 ### 12. Funciones/métodos largos o con muchos parámetros (Tam) — OK
 
 - **Qué mide:** Tamaño de las funciones/métodos y cantidad de parámetros.
 - **Por qué importa:** Una función que hace varias cosas cuesta leerla, nombrarla y reutilizarla.
-- **Tu resultado:** **8** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
+- **Tu resultado:** **14** función/método(s) largos o con muchos parámetros _(máximo 10 por 1000 LOC)_
 
 ### 13. Acoplamiento alto (Acop) — OK
 
@@ -122,39 +122,29 @@ Cada aspecto indica **qué mide**, **por qué importa** y **tu resultado**. Cuan
 - **Por qué importa:** Piezas muy enlazadas hacen que un cambio se propague y que sea difícil reemplazar partes.
 - **Tu resultado:** **0** unidad(es) con acoplamiento alto _(máximo 2 por 1000 LOC)_
 
-### 14. Cobertura de tests (Cob) — A REVISAR
+### 14. Cobertura de tests (Cob) — OK
 
 - **Qué mide:** Porcentaje de líneas de código ejecutadas por la suite de tests (cobertura real, no cantidad de archivos de test).
 - **Por qué importa:** Un test que existe pero no ejecuta el código no protege de nada: la cobertura muestra qué partes quedan sin verificar.
-- **Tu resultado:** **40.6%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json _(mínimo 80% de líneas)_
-- **Para investigar la causa:**
-    - ¿Qué módulos o ramas del sistema nunca se ejecutan en los tests?
-    - ¿Los tests prueban el camino principal y los errores, o solo el caso feliz?
-    - ¿La suite se puede correr en CI sin base de datos ni servicios externos?
+- **Tu resultado:** **98.9%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json _(mínimo 80% de líneas)_
 
 ### 15. Vistas del frontend (Vistas) — OK
 
 - **Qué mide:** Cantidad de vistas/componentes de pantalla del frontend.
 - **Por qué importa:** El frontend se mide por pantallas: pocas vistas sugiere poca cobertura de la interfaz pedida.
-- **Tu resultado:** **17** vista(s)/componente(s) _(mínimo 6)_
+- **Tu resultado:** **23** vista(s)/componente(s) _(mínimo 6)_
 
 ## 5. Observaciones y qué falta
 
-Criterios que hoy están en rojo y, para cada uno, una explicación breve de **cómo corregirlo** hasta alcanzar el nivel de aprobación (perfil `exigente`):
-
-| Criterio | Resultado actual | Meta | Brecha | Cómo alcanzarlo |
-|---|---|---|---|---|
-| Cobertura de tests (Cob) | **40.6%** de líneas cubiertas · fuente: artefacto: coverage/coverage-summary.json | mínimo 80% de líneas | faltan 39.4 pts | Agregá o ampliá tests que ejecuten los módulos sin cubrir (camino principal y errores) y publicá el artefacto (`coverage/lcov.info`, `coverage-summary.json`, `coverage.xml` o `coverage.json`) o corré la suite con coverage. Meta: ≥80% de líneas. |
-
-> Empezá por las señales de seguridad (**SEC**, **SQL**) y por la **duplicación**: son las que más pesan en el índice y las más rápidas de verificar a ojo. Después de corregir, volvé a correr la medición: el semáforo se recalcula sobre `main`.
+_Cumple **todos** los criterios del semáforo: no hay nada que arreglar para aprobar. El siguiente objetivo es sostenerlo y mejorar duplicación y diseño._
 
 ## 6. Actividad en clase y fuera de clase
 
-> Se consideran las **27 clases** del período (miércoles y viernes, según `config/constancia.json`; feriados y semanas sin clase descontados). Para cada alumno se muestra la actividad **en cada clase** y también la actividad **fuera de los días de clase** (fines de semana u otros días). `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**.
+> Se consideran las **28 clases** del período (miércoles y viernes, según `config/constancia.json`; feriados y semanas sin clase descontados). Para cada alumno se muestra la actividad **en cada clase** y también la actividad **fuera de los días de clase** (fines de semana u otros días). `Commits` = commits de trabajo (no-merge); `Merges` = merges de PR (también son push). Los días sin actividad dicen **sin actividad**.
 
 ### gonza-carelli
 
-**12/27 clases con actividad** · total del período: 29 commits · 29 merges
+**14/28 clases con actividad** · total del período: 37 commits · 37 merges
 
 | Fecha | Actividad | Repositorios | Commits / merges |
 |---|:--:|---|--:|
@@ -184,14 +174,20 @@ Criterios que hoy están en rojo y, para cada uno, una explicación breve de **c
 | 2026-11-04 | No | sin actividad | 0 / 0 |
 | 2026-11-06 | **Sí** | Backend, Frontend | 2 / 1 |
 | 2026-11-11 | **Sí** | Backend, Frontend | 4 / 7 |
-| 2026-11-13 | No | sin actividad | 0 / 0 |
+| 2026-11-13 | **Sí** | Frontend | 1 / 1 |
+| 2026-11-18 | **Sí** | Backend, Frontend | 7 / 7 |
 
-**Fuera de clase:** sin actividad registrada.
+**Fuera de clase:** 2 fecha(s) con actividad · 1 commits · 1 merges
 
-## 7. Anexo: dónde mirar
+| Fecha | Repositorios | Commits / merges |
+|---|---|--:|
+| 2026-11-15 | Frontend | 1 / 0 |
+| 2026-11-16 | Frontend | 0 / 1 |
 
-Archivos donde el análisis encontró cada señal en rojo (sin número de línea, a propósito):
+## 7. Anexo: archivos donde se originan los problemas
+
+_No hay criterios en rojo: no hay archivos que corregir._
 
 ---
-_Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo señalado y el criterio en `CRITERIOS-CALIDAD.md`._
+_Informe generado por la cátedra. Los umbrales corresponden al perfil `exigente`. Ante dudas, revisá el archivo y la línea señalados y el criterio en `CRITERIOS-CALIDAD.md`._
 <!-- evaluacion:fin -->
